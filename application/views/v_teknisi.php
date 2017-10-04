@@ -64,21 +64,13 @@
     <li><a class="icons-sm tw-ic"><i class="fa fa-twitter"> </i></a></li>
   </ul>
 </li>
-
-<!--/Social-->
-<!--Search Form-->
-
-
-
-<!--/.Search Form-->
-<!-- Side navigation links -->
 <li>
   <ul class="collapsible collapsible-accordion">
 
-    <li><a class="social collapsible-header waves-effect arrow-r"><i class="fa fa-user mr-1"></i><?php echo $this->session->userdata('nama') ?><i class="fa fa-angle-down rotate-icon"></i></a>
+    <li><a class="social collapsible-header waves-effect arrow-r"><i class="fa fa-user mr-1"></i><i class="fa fa-angle-down rotate-icon"></i>  <?php echo $this->session->userdata('nama') ?></a>
       <div class="collapsible-body">
         <ul>
-          <li><a class="collapsible-header waves-effect arrow-r" href="<?php echo base_url('User/logout') ?>"><i class="fa fa-sign-out ml-1"></i> Log Out</a>
+          <li><a class="collapsible-header waves-effect arrow-r" href="<?php echo base_url('Access/LogOut') ?>"><i class="fa fa-sign-out ml-1"></i> Log Out</a>
           </li>
         </ul>
       </div>
@@ -88,7 +80,9 @@
     <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-edit"></i> Aplikasi<i class="fa fa-angle-down rotate-icon"></i></a>
       <div class="collapsible-body">
         <ul>
-          <li><a href="#" id='click_on_map' class="waves-effect"><i class="fa fa-crosshairs" id="token_click_on_map"></i> Click On Map</a></li>
+          <li><a href="#" id='show_my_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_my_cluster"></i> Show My Cluster</a></li>
+          <li><a href="#" id='show_nearest_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_nearest_cluster"></i> Show Nearest Cluster</a></li>
+          <li><a href="#" id='show_most_pi_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_most_pi_cluster"></i> Show Most PI Cluster</a></li>
           <li><a href="#" id='show_location' class="waves-effect"><i class="fa fa-circle-o" id="token_show_location"></i> Show All Locations</a></li>
         </ul>
       </div>
@@ -101,8 +95,6 @@
         </ul>
       </div>
     </li>
-    <li><a class="collapsible-header waves-effect arrow-r" href="<?php echo base_url('User/logout') ?>"><i class="fa fa-sign-out ml-1"></i> Log Out</a>
-    </li>
   </ul>
 </li>
 <!--/. Side navigation links -->
@@ -112,7 +104,7 @@
 
 <!--Navbar-->
 <nav class="navbar narvar-expanded-lg navbar-dark">
-  <a href="#" data-activates="slide-out" class="button-collapse"><i class="fa fa-bars white-text"></i><strong class="white-text">  WMF MAP</strong></a>
+  <a href="#" data-activates="slide-out" class="button-collapse"><i class="fa fa-bars white-text"></i><strong class="white-text">  WFM MAP</strong></a>
 </nav>
 
 <div id="googleMap" style="width:100%;height:100%;"></div>
@@ -130,45 +122,6 @@
   </div>
 </section>
 
-<div class="modal fade" id="modal_add_location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog cascading-modal" role="document">
-        <!--Content-->
-      <div class="modal-content">
-          <!--Header-->
-          <div class="modal-header light-blue darken-3 white-text">
-            <h4 class="title"><i class="fa fa-pencil"></i> Tambah Lokasi</h4>
-            <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-            <!--Body-->
-          <form class="" id="frm_add_location" method="post">
-            <div class="modal-body mb-0">
-              <div class="md-form form-sm">
-                <input type="text" id="add_nama" name="add_nama" class="form-control">
-                <label for="add_nama">Nama</label>
-              </div>
-              <div class="md-form form-sm">
-                <input type="text" id="add_lat" name="add_lat" class="form-control" readonly value=" ">
-                <label for="add_lat">Latitude</label>
-              </div>
-              <div class="md-form form-sm">
-                <input type="text" id="add_long" name="add_long" class="form-control" readonly value=" ">
-                <label for="add_long">Longitude</label>
-              </div>
-              <div class="md-form form-sm">
-                <textarea type="text" id="add_keterangan" name="add_keterangan" class="md-textarea mb-0"> </textarea>
-                <label for="add_keterangan">Keterangan</label>
-              </div>
-            </form>
-            <div class="text-center mt-1-half">
-                <button id="submit_add_location" class="btn btn-info mb-2">Send <i class="fa fa-send ml-1"></i></button>
-            </div>
-            </div>
-        </div>
-        <!--/.Content-->
-    </div>
-</div>
 <footer class="page-footer center-on-small-only fluid-bottom">
 
   <!--Footer Links-->
@@ -206,6 +159,9 @@
   var prev_iw=false;
   var iw_content;
 
+  var username="<?php echo $this->session->userdata('username') ?>";
+  var cluster;
+
   $(document).ready(function(){
     $(".button-collapse").sideNav();
 
@@ -216,8 +172,93 @@
     });
   });
 
-  $('#show_location').click(function(e)
-  {
+  $('#show_my_cluster').click(function() {
+    $.ajax({
+      url: '<?php echo base_url('teknisi/ajax_get_teknisi') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data:{username:username},
+      success:function(data){
+        get_odc(data[0]);
+      },
+      error:function() {
+        alert('error show my cluster');
+      }
+    });
+  });
+
+  function get_odc(data){
+    $.ajax({
+      url: '<?php echo base_url('teknisi/ajax_get_odc') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: {
+        sto:data.STO,
+        name:data.CLUSTER
+      },
+      success:function(data){
+        console.log(data);
+        var lat=data[0].LATITUDE; var lng=data[0].LONGITUDE;
+        var location = new google.maps.LatLng(lat,lng);
+        var cluster = new google.maps.Circle({
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35,
+            map: map,
+            center: location,
+            radius: 250
+          });
+          map.setCenter(location);
+          map.setZoom(15);
+          get_odp(lat,lng);
+      },
+      error:function(){
+        alert('error get odc');
+      }
+    });
+  }
+
+  function get_odp(lat,lng){
+    $.ajax({
+      url: '<?php echo base_url('teknisi/ajax_get_odp') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data:{
+        lat:lat,
+        lng:lng
+      },
+      success:function(data){
+        for (var i = 0; i < data.length; i++) {
+          // var sto = data[i].STO;
+          // var nama = data[i].NAME;
+          // var alamat = data[i].ALAMAT;
+          var lat = data[i].LATITUDE;
+          var lng = data[i].LONGITUDE;
+          var location = new google.maps.LatLng(lat,lng);
+
+          var marker= new google.maps.Marker({
+            position:location,
+            map:map,
+          });
+          array_marker.push(marker);
+
+          marker.infowindow = new google.maps.InfoWindow({
+            content:'marker masuk ke lingkaran',
+            maxWidth:400,
+          });
+          click_marker(map,marker);
+        }
+      },
+      error:function(){
+        alert('error LELE');
+      }
+    });
+
+  }
+
+  $('#show_location').click(function(e){
     e.preventDefault();
     if(toogle_show_location==0){
       $.ajax({
@@ -262,41 +303,6 @@
       toogle_show_location=0;
     }
   });
-  function triger_edit_location() {
-    $('#keterangan').attr('readonly', false);
-    $('#lat').attr('readonly', false);
-    $('#long').attr('readonly', false);
-    $('.keterangan').addClass('text-primary');
-    $('#save').attr('disabled', false);
-    $('#keterangan').focus();
-  }
-
-  function edit_location(){
-    $.ajax({
-      url: '<?php echo base_url('Maps/edit_location') ?>',
-      type: 'POST',
-      dataType: 'JSON',
-      data: $('#frm_content').serialize(),
-      success: function (data)
-      {
-        if (data) {
-          toastr["success"]("Data berhasil diedit!");
-        }
-        else {
-          toastr["error"]("Data gagal diedit!");
-        }
-        $('#keterangan').attr('readonly', true);
-        $('#lat').attr('readonly', true);
-        $('#long').attr('readonly', true);
-        $('.keterangan').removeClass('text-primary');
-        $('#save').attr('disabled', true);
-      },
-      error:function(jqXHR,textStatus,errorThrown)
-      {
-        toastr["error"]("Data gagal diedit!");
-      }
-    });
-  }
 
   function set_content(data){
     iw_content='<form  id="frm_content">'+
@@ -335,54 +341,6 @@
                   '<button onclick="delete_location()" type="button" name="delete" id="delete" class="btn btn-danger btn-sm text-white">Delete</button>'+
                 '</div>';
       return iw_content;
-    }
-
-    function click_on_map(){
-      map.setOptions({draggableCursor:'crosshair'});
-      var listener = google.maps.event.addListener(map,'click',function(event){
-        var lat=event.latLng.lat();
-        var lng=event.latLng.lng();
-        var nama;
-        var data = [];
-        data.latitude=lat;
-        data.longitude=lng;
-
-        $("#add_lat").val(lat);
-        $("#add_long").val(lng);
-        $("#modal_add_location").modal('show');
-        $("#submit_add_location").click(function(e){
-          e.preventDefault();
-          $.ajax({
-            url: '<?php echo base_url('Maps/add_location') ?>',
-            type: 'POST',
-            dataType: 'JSON',
-            data: $('#frm_add_location').serialize(),
-            success:function(data){
-              if (data) {
-                toastr["success"]("Data berhasil ditambah!");
-                $("#add_nama").val(" ");
-                $("#add_lat").val(" ");
-                $("#add_long").val(" ");
-                $("#add_keterangan").val(" ");
-                $("#modal_add_location").modal('hide');
-              }
-              else {
-                toastr["error"]("Data gagal ditambah!");
-              }
-              $('#add_keterangan').attr('readonly', true);
-              $('#add_lat').attr('readonly', true);
-              $('#add_long').attr('readonly', true);
-            },
-            error:function(jqXHR,textStatus,errorThrown){
-              toastr["error"]("Data gagal ditambah! Gunakan nama lain!");
-            }
-          });
-        });
-        google.maps.event.removeListener(listener);
-        map.setOptions({ draggableCursor: 'url(http://maps.google.com/mapfiles/openhand.cur), move' });
-        $('#click_on_map').removeClass('active');
-      });
-
     }
 
     function click_marker(map,marker){

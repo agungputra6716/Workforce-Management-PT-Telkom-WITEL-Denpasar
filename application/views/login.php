@@ -15,18 +15,18 @@
 
     <!-- Material Design Bootstrap -->
     <link href="<?php echo base_url('assets/css/compiled.min.css') ?>" rel="stylesheet">
-    
+
   </head>
-  
+
   <body class="login-page">
     <div class="container">
-      <?php 
-          echo form_open(uri_string());
-          if (isset($error)){
-              echo "<div class='error'><center>$error</center></div>";
-          }
-      ?>
         <p class="h5 text-center mb-4">Sign in</p>
+        <?php 
+        echo form_open(uri_string());
+        if (isset($error)){
+          echo "<div class='error'><center>$error</center></div>";
+        }
+        ?>
         <div class="md-form">
             <i class="fa fa-envelope prefix grey-text"></i>
             <input type="text" id="username" name="username" autofocus class="form-control">
@@ -57,6 +57,5 @@
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="<?php echo base_url('assets/js/compiled.min.js') ?>"></script>
   </body>
-  
-</html>
 
+</html>
