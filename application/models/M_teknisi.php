@@ -9,19 +9,12 @@ class M_teknisi extends CI_Model{
     //Codeigniter : Write Less Do More
   }
 
-  public function get_teknisi($username){
-    $this->db->where('USERNAME', $username);
-    $query = $this->db->get('teknisi');
-    return $query->result();
-  }
-
-  public function get_odc($sto,$name){
-    $this->db->where('STO', $sto);
-    $this->db->where('NAME', $name);
+  public function get_sto(){
+    $this->db->distinct();
+    $this->db->select('STO');
     $query = $this->db->get('alpro_odc');
     return $query->result();
   }
-
   public function get_odp(){
     $query = $this->db->get('alpro_odp');
     $lat2=$this->input->post('lat');
@@ -38,7 +31,19 @@ class M_teknisi extends CI_Model{
     }
     return $odp;
   }
-
+  public function get_odc($sto,$name){
+    if ($name!=NULL){
+      $this->db->where('NAME', $name);
+    }
+    $this->db->where('STO', $sto);
+    $query = $this->db->get('alpro_odc');
+    return $query->result();
+  }
+  public function get_teknisi($username){
+    $this->db->where('USERNAME', $username);
+    $query = $this->db->get('teknisi');
+    return $query->result();
+  }
   public function distance($lat1, $lon1, $lat2, $lon2) {
     $theta = $lon1 - $lon2;
     $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));

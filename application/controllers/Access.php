@@ -11,12 +11,7 @@ class Access extends CI_Controller {
 	public function index() {
 		$is_logged_in = $this->session->userdata('is_logged_in');
 		if($is_logged_in) {
-			if ($this->session->userdata('role')=='ADMIN') {
-				redirect('admin');
-			}
-			elseif($this->session->userdata('role')=='TEKNISI'){
-				redirect('maps');
-			}
+			redirect('maps');
 		}
 		else {
 			$this->form_validation->set_rules('username','Username','required|trim');
@@ -47,12 +42,7 @@ class Access extends CI_Controller {
 						'nama'			=> $nama,
 					);
 					$this->session->set_userdata($data);
-					if ($this->session->userdata('role')=='ADMIN') {
-						redirect('admin');
-					}
-					elseif($this->session->userdata('role')=='TEKNISI'){
-						redirect('maps');
-					}
+					redirect('maps');
 				}
 				else {
 					$data['error']="Invalid User Id and Password combination";
