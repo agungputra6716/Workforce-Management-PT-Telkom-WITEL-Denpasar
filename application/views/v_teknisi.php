@@ -15,6 +15,9 @@
 
     <!-- Material Design Bootstrap -->
     <link href="<?php echo base_url('assets/css/compiled.min.css') ?>" rel="stylesheet">
+    <link href="<?php echo base_url('assets/css/jquery.dataTables.min.css') ?>" rel="stylesheet">
+    <link href="<?php echo base_url('assets/css/dataTables.bootstrap.min.css') ?>" rel="stylesheet">
+    <link href="<?php echo base_url('assets/css/style.css') ?>" rel="stylesheet">
 
     <!-- Template styles -->
     <style rel="stylesheet">
@@ -39,7 +42,9 @@
             -o-background-size: cover;
             background-size: cover;
         }
-
+        tr{
+          font-size: 12px;
+        }
 
     </style>
 </head>
@@ -84,6 +89,7 @@
           <li><a href="#" id='search_cluster' class="waves-effect"><i class="fa fa-search" id="token_show_my_cluster"></i> Search Cluster</a></li>
           <li><a href="#" id='show_nearest_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_nearest_cluster"></i> Show Nearest Cluster</a></li>
           <li><a href="#" id='show_most_pi_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_most_pi_cluster"></i> Show Most PI Cluster</a></li>
+          <li><a href="#" id='show_sc_table' class="waves-effect"><i class="fa fa-table" id="token_show_nearest_cluster"></i> Show SC Table</a></li>
           <!-- <li><a href="#" id='show_location' class="waves-effect"><i class="fa fa-circle-o" id="token_show_location"></i> Show All Locations</a></li> -->
         </ul>
       </div>
@@ -122,8 +128,6 @@
     </ul>
   </div>
 </section>
-
-<!--Modal: Subscription From-->
 <div class="modal fade" id="modal_search_cluster" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog cascading-modal" role="document">
         <!--Content-->
@@ -171,10 +175,57 @@
         <!--/.Content-->
     </div>
 </div>
-<!--Modal: Subscription From-->
+
+<!-- Central Modal Medium Success -->
+<div class="modal fade" style="height:700px;"id="modal_sc_table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-fluid" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">SC Table</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body sc_table table-responsive">
+        <table id="sc_table" style="height:300px;"class="table display table-hover table-responsive" cellspacing="0" width="100%">
+          <thead>
+              <tr>
+                  <th>No</th>
+                  <th>STO</th>
+                  <th>NO SC</th>
+                  <th>TYPE TRANSAKSI </th>
+                  <th>ALPRO</th>
+                  <th>POTS</th>
+                  <th>SPEEDY</th>
+                  <th>STATUS RESUME</th>
+                  <th>ORDER DATE</th>
+                  <th>NAMA CUST</th>
+                  <th>ALAMAT</th>
+                  <th>LONGITUDE</th>
+                  <th>LATITUDE</th>
+                  <th>TGL INSTALL</th>
+                  <th>TEKNISI</th>
+                  <th>HP TEKNISI</th>
+                  <th>TINDAK LANJUT</th>
+                  <th>SN ONT</th>
+              </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer id='footer' class="page-footer center-on-small-only fluid-bottom danger-color-dark">
 
-  <!--Footer Links-->
 
   <!--Copyright-->
   <div class="footer-copyright">
@@ -186,19 +237,12 @@
 </footer>
 
 <!-- SCRIPTS -->
-
-<!-- JQuery -->
 <script type="text/javascript" src="<?php echo base_url('assets/js/jquery-3.2.1.min.js') ?>"></script>
-
-<!-- Bootstrap tooltips -->
 <script type="text/javascript" src="<?php echo base_url('assets/js/tether.min.js') ?>"></script>
-
-<!-- Bootstrap core JavaScript -->
 <script type="text/javascript" src="<?php echo base_url('assets/js/bootstrap.min.js') ?>"></script>
-
-<!-- MDB core JavaScript -->
 <script type="text/javascript" src="<?php echo base_url('assets/js/compiled.min.js') ?>"></script>
-<!-- Google Maps API -->
+<script type="text/javascript" src="<?php echo base_url('assets/js/jquery.dataTables.min.js') ?>"></script>
+<script type="text/javascript" src="<?php echo base_url('assets/js/dataTables.bootstrap.min.js') ?>"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb4ThyMb8dBaJ6-g_NN9GMFk1sxupL-Uw&callback=myMap" async defer ></script>
 
 <script type="text/javascript">
@@ -219,6 +263,7 @@
       $('#show_location').remove();
       $('#manage_user').remove();
       $('#search_cluster').remove();
+      $('#show_sc_table').remove();
     }
     else if('<?php echo $this->session->userdata('role') ?>'=='ADMIN'){
       $('#show_my_cluster').remove();
@@ -327,6 +372,8 @@
   $('#search_cluster').click(function(e) {
     e.preventDefault();
     $('#slide-out').sideNav('hide');
+    num_normal=0;
+    num_pi=0;
     $.ajax({
       url: '<?php echo base_url('teknisi/ajax_get_sto') ?>',
       type: 'POST',
@@ -362,14 +409,43 @@
         name: odc
       },
       success:function(data){
+        is_finished=false;
         $('#modal_search_cluster').modal('hide');
-        get_odp(data[0].LATITUDE,data[0].LONGITUDE);
+        var latlat=parseFloat(data[0].LATITUDE);
+        var lnglng=parseFloat(data[0].LONGITUDE);
+        get_sc(latlat,lnglng);
         create_circle(data[0]);
       },
       error:function(data){
         alert('error get cluster');
       }
     });
+  });
+  $('#show_sc_table').click(function(e){
+    e.preventDefault();
+    $('#modal_sc_table').modal('show');
+      table = $('#sc_table').DataTable({
+
+           "processing": true, //Feature control the processing indicator.
+           "serverSide": true, //Feature control DataTables' server-side processing mode.
+           "bDestroy": true,
+           "order": [], //Initial no order.
+
+           // Load data for the table's content from an Ajax source
+           "ajax": {
+               "url": "<?php echo base_url('teknisi/ajax_list')?>",
+               "type": "POST"
+           },
+
+           //Set column definition initialisation properties.
+           "columnDefs": [
+           {
+               "targets": [ -1 ], //last column
+               "orderable": false, //set not orderable
+           },
+           ],
+       });
+       $('#sc_table_filter').remove();
   });
 
   function myMap() {
@@ -400,7 +476,7 @@
       },
       success:function(data){
         $('#slide-out').sideNav('hide');
-        get_odp(data[0].LATITUDE,data[0].LONGITUDE);
+        get_sc(parseFloat(data[0].LATITUDE),parseFloat(data[0].LONGITUDE));
         create_circle(data[0]);
       },
       error:function(){
@@ -438,6 +514,44 @@
           click_overlay(map,marker,'marker');
           is_finished=true;
         }
+      },
+      error:function(){
+        alert('error LELE');
+      }
+    });
+
+  }
+  function get_sc(lat,lng){
+    $.ajax({
+      url: '<?php echo base_url('teknisi/ajax_get_sc') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data:{
+        lat:lat,
+        lng:lng
+      },
+      success:function(data){
+        toogle_show_location=1;
+        console.log(data);
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].STATUS_RESUME=='Process OSS (Provision Issued)') num_pi++;
+          else num_normal++;
+          var lat = parseFloat(data[i].LATITUDE);
+          var lng = parseFloat(data[i].LONGITUDE);
+          var location = new google.maps.LatLng(lat,lng);
+          var marker= new google.maps.Marker({
+            position:location,
+            map:map,
+          });
+          array_marker.push(marker);
+
+          marker.infowindow = new google.maps.InfoWindow({
+            content:set_content(data[i],'SC'),
+            maxWidth:400,
+          });
+          click_overlay(map,marker,'marker');
+        }
+        is_finished=true;
       },
       error:function(){
         alert('error LELE');
@@ -540,7 +654,9 @@
       else if ((num_pi/(num_pi+num_normal))<=1){
         var warna='#CC0000'
       }
-      var location = new google.maps.LatLng(data.LATITUDE,data.LONGITUDE);
+      var latlat=parseFloat(data.LATITUDE);
+      var lnglng=parseFloat(data.LONGITUDE);
+      var location = new google.maps.LatLng(latlat,lnglng);
       var cluster = new google.maps.Circle({
           strokeColor: warna,
           strokeOpacity: 0.8,
@@ -551,15 +667,9 @@
           center: location,
           radius: 250
         });
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].STATUS=='NORMAL') num_normal++;
-        else num_pi++;
-      }
       map.setCenter(location);
       map.setZoom(17);
       array_marker.push(cluster);
-      console.log(num_pi);
-      console.log(num_normal);
       cluster.infowindow = new google.maps.InfoWindow({
         content:set_content(data,'circle'),
         maxWidth:400,

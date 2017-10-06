@@ -19,33 +19,40 @@
   </head>
 
   <body class="login-page">
-    <div class="container">
-        <p class="h5 text-center mb-4">Sign in</p>
-        <?php 
-        echo form_open(uri_string());
-        if (isset($error)){
-          echo "<div class='error'><center>$error</center></div>";
-        }
-        ?>
-        <div class="md-form">
-            <i class="fa fa-envelope prefix grey-text"></i>
-            <input type="text" id="username" name="username" autofocus class="form-control">
-            <label for="username">Username</label>
-            <td class="error"><?php echo form_error('username'); ?></td>
-        </div>
+    <div class="" id="basicExample" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog" role="document">
+        <!--Content-->
+        <div class="container" >
+            <p class="h5 text-center mb-4">Sign in</p>
+            <?php
+            echo form_open(uri_string());
+            if (isset($error)){
+              echo "<div class='error'><center>$error</center></div>";
+            }
+            ?>
+            <div class="md-form">
+                <i class="fa fa-envelope prefix grey-text"></i>
+                <input type="text" id="username" name="username" autofocus class="form-control">
+                <label for="username">Username</label>
+                <td class="error"><?php echo form_error('username'); ?></td>
+            </div>
 
-        <div class="md-form">
-            <i class="fa fa-lock prefix grey-text"></i>
-            <input type="password" id="password" name="password" class="form-control">
-            <label for="password">Password</label>
-            <td class="error"><?php echo form_error('password'); ?></td>
-        </div>
+            <div class="md-form">
+                <i class="fa fa-lock prefix grey-text"></i>
+                <input type="password" id="password" name="password" class="form-control">
+                <label for="password">Password</label>
+                <td class="error"><?php echo form_error('password'); ?></td>
+            </div>
 
-        <div class="text-center">
-            <button type="submit" class="btn btn-default">Login</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-default">Login</button>
+            </div>
+          <?php echo form_close();?>
         </div>
-      <?php echo form_close();?>
+        <!--/.Content-->
     </div>
+</div>
+
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery-3.2.1.min.js') ?>"></script>
 
     <!-- Bootstrap tooltips -->
