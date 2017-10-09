@@ -80,7 +80,7 @@
         </ul>
       </div>
     </li>
-    <li id="manage_user"><a class="waves-effect arrow-r" href="<?php echo base_url('User'); ?>"><i class="fa fa-user mr-1"></i> Manage User</a>
+    <li id="btn_manage_user"><a class="waves-effect arrow-r" href=""><i class="fa fa-user mr-1"></i> Manage User</a>
     </li>
     <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-edit"></i> Aplikasi<i class="fa fa-angle-down rotate-icon"></i></a>
       <div class="collapsible-body">
@@ -224,6 +224,43 @@
   </div>
 </div>
 
+<div class="modal fade" style="height:700px;"id="modal_manage_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-lg" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">MANAGE USER</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body sc_table table-responsive">
+        <table id="tb_user" style="height:300px;width:100%;"class="table display table-hover table-responsive" cellspacing="0" width="100%">
+          <thead>
+              <tr>
+                  <th>No</th>
+                  <th>USERNAME</th>
+                  <th>NAME</th>
+                  <th>ROLE </th>
+                  <th>STO</th>
+                  <th>CLUSTER</th>
+                  <th>CLUSTER HELP</th>
+                  <th>WORK FINISHED</th>
+              </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer id='footer' class="page-footer center-on-small-only fluid-bottom danger-color-dark">
 
 
@@ -262,7 +299,7 @@
   $(document).ready(function(){
     if ('<?php echo $this->session->userdata('role') ?>'=='TEKNISI') {
       $('#show_location').remove();
-      $('#manage_user').remove();
+      $('#btn_manage_user').remove();
       $('#search_cluster').remove();
       $('#show_sc_table').remove();
     }
@@ -305,6 +342,7 @@
   $('#show_my_cluster').click(function(e) {
     e.preventDefault();
     if(toogle_show_location==0){
+      num_pi=0;num_normal=0;
       $.ajax({
         url: '<?php echo base_url('teknisi/ajax_get_teknisi') ?>',
         type: 'POST',
@@ -321,53 +359,7 @@
     }
     else{
       setMapOnAll(null);
-      array_marker = [];
-      toogle_show_location=0;
       $('#token_show_my_cluster').removeClass('fa-circle').addClass('fa-circle-o');
-    }
-  });
-  $('#show_location').click(function(e){
-    e.preventDefault();
-    if(toogle_show_location==0){
-      $.ajax({
-        url: '<?php echo base_url('Maps/get_location') ?>',
-        type: 'POST',
-        dataType: 'JSON',
-        data:{
-          alpro:'ODC'
-        },
-        success: function(data)
-        {
-          toogle_show_location=1;
-          $('#token_show_location').removeClass('fa-circle-o').addClass('fa-circle');
-          for (var i = 0; i < data.length; i++) {
-            var sto = data[i].STO;
-            var nama = data[i].NAME;
-            var alamat = data[i].ALAMAT;
-            var lat = data[i].LATITUDE;
-            var lng = data[i].LONGITUDE;
-            var location = new google.maps.LatLng(lat,lng);
-
-            var marker= new google.maps.Marker({
-              position:location,
-              map:map,
-            });
-            array_marker.push(marker);
-
-            marker.infowindow = new google.maps.InfoWindow({
-              content:set_content(data[i],'ODP'),
-              maxWidth:400,
-            });
-            click_overlay(map,marker);
-          }
-        }
-      });
-    }
-    else {
-      setMapOnAll(null);
-      array_marker = [];
-      $('#token_show_location').removeClass('fa-circle').addClass('fa-circle-o');
-      toogle_show_location=0;
     }
   });
   $('#search_cluster').click(function(e) {
@@ -391,6 +383,10 @@
       }
     });
     $('#modal_search_cluster').modal('show');
+  });
+  $('#show_sc_table').click(function(e){
+    e.preventDefault();
+    show_data_table_sc('all');
   });
   $('#btn_submit_search_cluster').click(function(e) {
     e.preventDefault();
@@ -422,9 +418,9 @@
       }
     });
   });
-  $('#show_sc_table').click(function(e){
+  $('#btn_manage_user').click(function(e) {
     e.preventDefault();
-    show_data_table_sc('all');
+    show_data_table_user();
   });
 
   function myMap() {
@@ -454,6 +450,7 @@
         name:data.CLUSTER
       },
       success:function(data){
+        is_finished=false;
         $('#slide-out').sideNav('hide');
         get_odp(parseFloat(data[0].LATITUDE),parseFloat(data[0].LONGITUDE));
         create_circle(data[0]);
@@ -490,12 +487,12 @@
           });
           click_overlay(map,marker,'marker');
         }
+
         for (var i = 0; i < data['sc'].length; i++) {
           if (data['sc'][i].STATUS_RESUME=='Process OSS (Provision Issued)') num_pi++;
           else num_normal++;
           array_sc.push(data['sc'][i].ALPRO);
         }
-        console.log(array_sc);
         is_finished=true;
       },
       error:function(){
@@ -600,7 +597,7 @@
             '</div>'+
           '</div>'+
         '</form>'+
-        '<button type="button" class="btn btn-success btn-sm"><i class="fa fa-rss"></i>  Cari Cluster Terdekat</button>';
+        '<button type="button" onclick="search_nearest_cluster(\''+data.LATITUDE+'\',\''+data.LONGITUDE+'\')" class="btn btn-success btn-sm"><i class="fa fa-rss"></i>  Cari Cluster Terdekat</button>';
 
     }
       return iw_content;
@@ -609,6 +606,8 @@
     for (var i = 0; i < array_marker.length; i++) {
       array_marker[i].setMap(map);
     }
+    array_marker = [];
+    toogle_show_location=0;
   }
   function create_circle(data){
     if (is_finished) {
@@ -658,10 +657,7 @@
       }
       else{
         marker_counter=1;
-        if (type=="marker") {
-          marker.infowindow.setPosition(event.click);
-        }
-        else if (type=="circle") {
+        if (type=="circle") {
           marker.infowindow.setPosition(marker.getCenter());
         }
         prev_iw= marker.infowindow;
@@ -698,6 +694,54 @@
            ],
        });
       //  $('#sc_table_filter').remove();
+  }
+  function show_data_table_user(){
+    $('#modal_manage_user').modal('show');
+      table = $('#tb_user').DataTable({
+           "processing": true, //Feature control the processing indicator.
+           "serverSide": true, //Feature control DataTables' server-side processing mode.
+           "bDestroy": true,
+           "order": [], //Initial no order.
+
+           // Load data for the table's content from an Ajax source
+           "ajax": {
+               "url": "<?php echo base_url('Access/ajax_user')?>",
+               "type": "POST",
+           },
+
+           //Set column definition initialisation properties.
+           "columnDefs": [
+           {
+               "targets": [ -1 ], //last column
+               "orderable": false, //set not orderable
+           },
+           ],
+       });
+      //  $('#sc_table_filter').remove();
+  }
+  function search_nearest_cluster(lat,lng){
+    if (toogle_show_location==1) {
+      setMapOnAll(null);
+    }
+    num_pi=0;num_normal=0;
+    $.ajax({
+      url: '<?php echo base_url("teknisi/ajax_get_nearest"); ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: {
+        lat: lat,
+        lng: lng
+      },
+      success:function(data){
+        is_finished=false;
+        get_odp(parseFloat(data.LATITUDE),parseFloat(data.LONGITUDE));
+        create_circle(data);
+      },
+      error:function(){
+        alert('error get nearest cluster')
+      }
+    });
+    toogle_show_location=1;
   }
   </script>
 </body>

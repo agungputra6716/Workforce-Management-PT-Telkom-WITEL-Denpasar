@@ -31,13 +31,21 @@ class M_teknisi extends CI_Model{
         $lat1=$row->LATITUDE;
         $lon1=$row->LONGITUDE;
         if ($this->distance($lat1,$lon1,$lat2,$lon2)<=0.5) {
-          $this->db->where('ALPRO',$row->PD_NAME);
-          $query1 = $this->db->get('sc');
-          if ($query1->num_rows()>0) {
-            foreach ($query1->result() as $key) {
-              array_push($sc,$key);
-            }
-          }
+          array_push($odp,$row);
+        }
+      }
+    }
+    return $odp;
+  }
+  public function get_odp_nearest($lat2,$lng2){
+    $query = $this->db->get('alpro_odp');
+    $odp=array();
+    $sc=array();
+    if ($query->num_rows()>0) {
+      foreach ($query->result() as $row) {
+        $lat1=$row->LATITUDE;
+        $lng1=$row->LONGITUDE;
+        if ($this->distance($lat1,$lng1,$lat2,$lng2)<=0.5) {
           array_push($odp,$row);
         }
       }
@@ -65,9 +73,15 @@ class M_teknisi extends CI_Model{
     if ($name!=NULL){
       $this->db->where('NAME', $name);
     }
-    $this->db->where('STO', $sto);
+    if ($sto!=NULL) {
+      $this->db->where('STO', $sto);
+    }
     $query = $this->db->get('alpro_odc');
-    return $query->result();
+    $odc=array();
+    foreach ($query->result() as $key) {
+      array_push($odc,$key);
+    }
+    return $odc;
   }
   public function get_teknisi($username){
     $this->db->where('USERNAME', $username);
@@ -101,9 +115,9 @@ class M_teknisi extends CI_Model{
   private function _get_datatables_query(){
       if ($this->input->post('type')!='all') {
         $sc=$this->input->post('sc');
-        $where='ALPRO= "'.$sc[0].'"';
+        $where='ALPRO = "'.$sc[0].'"';
         for ($i=1; $i <sizeof($sc) ; $i++) {
-          $where.='OR ALPRO= "'.$sc[i].'"';
+          $where.='OR ALPRO= "'.$sc[$i].'"';
         }
         $this->db->where($where);
       }

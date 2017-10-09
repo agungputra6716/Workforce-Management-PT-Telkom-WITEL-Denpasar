@@ -46,8 +46,8 @@ class Teknisi extends CI_Controller{
         $row[] = $key->TYPE_TRANSAKSI;
         $row[] = $key->ALPRO;
         $row[] = $key->POTS;
-        $row[] = $key->STATUS_RESUME;
         $row[] = $key->SPEEDY;
+        $row[] = $key->STATUS_RESUME;
         $row[] = $key->ORDER_DATE;
         $row[] = $key->NAMA_CUST;
         $row[] = $key->ALAMAT;
@@ -71,6 +71,44 @@ class Teknisi extends CI_Controller{
       //output to json format
       echo json_encode($output);
     }
+  public function ajax_get_nearest(){
+    $data = $this->M_teknisi->get_odc(null,null);
+    $odc=array();
+    $lat1=$this->input->post('lat');
+    $lng1=$this->input->post('lng');
+    foreach ($data as $key) {
+      $row=array();
+      $lat2=$key->LATITUDE;
+      $lng2=$key->LONGITUDE;
 
+      $row['DISTANCE']=$this->M_teknisi->distance($lat1,$lng1,$lat2,$lng2);
+      $row['STO']=$key->STO;
+      $row['NAME']=$key->NAME;
+      $row['LATITUDE']=$key->LATITUDE;
+      $row['LONGITUDE']=$key->LONGITUDE;
+      $row['ALAMAT']=$key->ALAMAT;
+
+      array_push($odc,$row);
+    }
+    sort($odc);
+    $status=false;
+    $i=1;
+    while($status==false){
+      $data['odp'][$i] = $this->M_teknisi->get_odp_nearest($odc[$i]['LATITUDE'],$odc[$i]['LONGITUDE']);
+      $data['sc'][$i] = $this->M_teknisi->get_sc($data['odp'][$i]);
+      if ($data['sc'][$i]) {
+        $status=true;
+        $nearest=[
+          'LATITUDE'=>$odc[$i]['LATITUDE'],
+          'LONGITUDE'=>$odc[$i]['LONGITUDE'],
+          'STO'=>$odc[$i]['STO'],
+          'NAME'=>$odc[$i]['NAME'],
+          'ALAMAT'=>$odc[$i]['ALAMAT']
+        ];
+      }
+      $i++;
+    }
+    echo json_encode($nearest);
+  }
 
 }
