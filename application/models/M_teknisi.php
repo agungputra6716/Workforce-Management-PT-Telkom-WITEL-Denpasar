@@ -71,7 +71,7 @@ class M_teknisi extends CI_Model{
   }
   public function get_teknisi($username){
     $this->db->where('USERNAME', $username);
-    $query = $this->db->get('teknisi');
+    $query = $this->db->get('user');
     return $query->result();
   }
   public function distance($lat1, $lon1, $lat2, $lon2) {
