@@ -250,6 +250,7 @@
   var map;
   var marker_counter=0;
   var array_marker = [];
+  var array_sc = [];
   var toogle_show_location=0;
   var prev_iw=false;
   var iw_content;
@@ -393,13 +394,13 @@
   });
   $('#btn_submit_search_cluster').click(function(e) {
     e.preventDefault();
+    var sto=$('#select_sto').val();
+    var odc=$('#select_odc').val();
     if (toogle_show_location==1){
       setMapOnAll(null);
       array_marker = [];
       toogle_show_location=0;
     }
-    var sto=$('#select_sto').val();
-    var odc=$('#select_odc').val();
     $.ajax({
       url: '<?php echo base_url('teknisi/ajax_get_odc') ?>',
       type: 'POST',
@@ -413,7 +414,7 @@
         $('#modal_search_cluster').modal('hide');
         var latlat=parseFloat(data[0].LATITUDE);
         var lnglng=parseFloat(data[0].LONGITUDE);
-        get_sc(latlat,lnglng);
+        get_odp(latlat,lnglng);
         create_circle(data[0]);
       },
       error:function(data){
@@ -423,29 +424,7 @@
   });
   $('#show_sc_table').click(function(e){
     e.preventDefault();
-    $('#modal_sc_table').modal('show');
-      table = $('#sc_table').DataTable({
-
-           "processing": true, //Feature control the processing indicator.
-           "serverSide": true, //Feature control DataTables' server-side processing mode.
-           "bDestroy": true,
-           "order": [], //Initial no order.
-
-           // Load data for the table's content from an Ajax source
-           "ajax": {
-               "url": "<?php echo base_url('teknisi/ajax_list')?>",
-               "type": "POST"
-           },
-
-           //Set column definition initialisation properties.
-           "columnDefs": [
-           {
-               "targets": [ -1 ], //last column
-               "orderable": false, //set not orderable
-           },
-           ],
-       });
-       $('#sc_table_filter').remove();
+    show_data_table_sc('all');
   });
 
   function myMap() {
@@ -476,7 +455,7 @@
       },
       success:function(data){
         $('#slide-out').sideNav('hide');
-        get_sc(parseFloat(data[0].LATITUDE),parseFloat(data[0].LONGITUDE));
+        get_odp(parseFloat(data[0].LATITUDE),parseFloat(data[0].LONGITUDE));
         create_circle(data[0]);
       },
       error:function(){
@@ -495,25 +474,29 @@
       },
       success:function(data){
         toogle_show_location=1;
-        for (var i = 0; i < data.length; i++) {
-          if (data[i].STATUS=='NORMAL') num_normal++;
-          else num_pi++;
-          var lat = data[i].LATITUDE;
-          var lng = data[i].LONGITUDE;
+        array_sc = [];
+        for (var i = 0; i < data['odp'].length; i++) {
+          var lat = data['odp'][i].LATITUDE;
+          var lng = data['odp'][i].LONGITUDE;
           var location = new google.maps.LatLng(lat,lng);
           var marker= new google.maps.Marker({
             position:location,
             map:map,
           });
           array_marker.push(marker);
-
           marker.infowindow = new google.maps.InfoWindow({
-            content:set_content(data[i],'ODP'),
+            content:set_content(data['odp'][i],'ODP'),
             maxWidth:400,
           });
           click_overlay(map,marker,'marker');
-          is_finished=true;
         }
+        for (var i = 0; i < data['sc'].length; i++) {
+          if (data['sc'][i].STATUS_RESUME=='Process OSS (Provision Issued)') num_pi++;
+          else num_normal++;
+          array_sc.push(data['sc'][i].ALPRO);
+        }
+        console.log(array_sc);
+        is_finished=true;
       },
       error:function(){
         alert('error LELE');
@@ -521,40 +504,24 @@
     });
 
   }
-  function get_sc(lat,lng){
+  function get_sc(pd_name){
     $.ajax({
       url: '<?php echo base_url('teknisi/ajax_get_sc') ?>',
       type: 'POST',
       dataType: 'JSON',
       data:{
-        lat:lat,
-        lng:lng
+        pd_name:pd_name
       },
       success:function(data){
-        toogle_show_location=1;
-        console.log(data);
         for (var i = 0; i < data.length; i++) {
           if (data[i].STATUS_RESUME=='Process OSS (Provision Issued)') num_pi++;
           else num_normal++;
-          var lat = parseFloat(data[i].LATITUDE);
-          var lng = parseFloat(data[i].LONGITUDE);
-          var location = new google.maps.LatLng(lat,lng);
-          var marker= new google.maps.Marker({
-            position:location,
-            map:map,
-          });
-          array_marker.push(marker);
-
-          marker.infowindow = new google.maps.InfoWindow({
-            content:set_content(data[i],'SC'),
-            maxWidth:400,
-          });
-          click_overlay(map,marker,'marker');
         }
+        array_sc.push(data);
         is_finished=true;
       },
       error:function(){
-        alert('error LELE');
+        alert('error get sc');
       }
     });
 
@@ -572,17 +539,17 @@
             '<div class="row">'+
               '<div class="col col-lg-12">'+
                 '<span class="keterangan">ODP Name</span>'+
-                '<input type="text" id="odp_name" name="odp_name" value="'+data.ODP_NAME+'" class="form-control" readonly>'+
+                '<input type="text" id="odp_name" name="odp_name" value="'+data.PD_NAME+'" class="form-control" readonly>'+
               '</div>'+
             '</div>'+
             '<div class="row">'+
               '<div class="col col-lg-6">'+
                 '<span class="keterangan">Status</span>'+
-                '<input type="text" id="alamat" name="alamat" value="'+data.STATUS+'" class="form-control" readonly>'+
+                '<input type="text" id="alamat" name="alamat" value="'+data.STATUS_ODP+'" class="form-control" readonly>'+
               '</div>'+
               '<div class="col col-lg-6">'+
                 '<span class="keterangan">Last Update Status</span>'+
-                '<input type="date" id="alamat" name="alamat" value="'+data.LAST_UPDATE_STATUS+'" class="form-control" readonly>'+
+                '<input type="date" id="alamat" name="alamat" value="'+data.UPDATE_DATE+'" class="form-control" readonly>'+
               '</div>'+
             '</div>'+
             '<div class="row">'+
@@ -613,12 +580,12 @@
             '</div>'+
             '<div class="row">'+
               '<div class="col col-lg-6">'+
-                '<span class="keterangan">Jumlah ODP Normal</span>'+
+                '<span class="keterangan">Jumlah PS</span>'+
                 '<input type="text" id="num_normal" name="num_normal" value="'+num_normal+'" class="form-control" readonly>'+
               '</div>'+
               '<div class="col col-lg-6">'+
-                '<span class="keterangan">Jumlah ODP PI</span>'+
-                '<input type="text" id="num_pi" name="num_pi" value="'+num_pi+'" class="form-control" readonly>'+
+                '<span class="keterangan">Jumlah PI</span>'+
+                '<input type="text" onclick="show_data_table_sc('+null+')" id="num_pi" name="num_pi" value="'+num_pi+'" class="form-control" readonly>'+
               '</div>'+
             '</div>'+
             '<div class="row">'+
@@ -665,7 +632,7 @@
           fillOpacity: 0.35,
           map: map,
           center: location,
-          radius: 250
+          radius: 500
         });
       map.setCenter(location);
       map.setZoom(17);
@@ -702,7 +669,36 @@
       }
     });
   }
+  function show_data_table_sc(type){
+    $('#modal_sc_table').modal('show');
+      table = $('#sc_table').DataTable({
+           "processing": true, //Feature control the processing indicator.
+           "serverSide": true, //Feature control DataTables' server-side processing mode.
+           "bDestroy": true,
+           "order": [], //Initial no order.
 
+           // Load data for the table's content from an Ajax source
+           "ajax": {
+               "url": "<?php echo base_url('teknisi/ajax_list')?>",
+               "type": "POST",
+               "data": function(data){
+                 if (type!='all') {
+                   data.sc = array_sc;
+                 }
+                 data.type=type;
+               }
+           },
+
+           //Set column definition initialisation properties.
+           "columnDefs": [
+           {
+               "targets": [ -1 ], //last column
+               "orderable": false, //set not orderable
+           },
+           ],
+       });
+      //  $('#sc_table_filter').remove();
+  }
   </script>
 </body>
 </html>

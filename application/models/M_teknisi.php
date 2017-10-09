@@ -9,6 +9,11 @@ class M_teknisi extends CI_Model{
     //Codeigniter : Write Less Do More
   }
 
+  var $table = 'sc';
+  var $column_order = array(null, 'STO','NO_SC','TYPE_TRANSAKSI','ALPRO','POTS','SPEEDY','STATUS_RESUME','ORDER_DATE','NAMA_CUST','ALAMAT','LONGITUDE','LATITUDE','TGL_INSTALL','TEKNISI','HP_TEKNISI','TINDAK_LANJUT','SN_ONT'); //set column field database for datatable orderable
+  var $column_search = array('STO','NO_SC','TYPE_TRANSAKSI','ALPRO','POTS','SPEEDY','STATUS_RESUME','ORDER_DATE','NAMA_CUST','ALAMAT','LONGITUDE','LATITUDE','TGL_INSTALL','TEKNISI','HP_TEKNISI','TINDAK_LANJUT','SN_ONT'); //set column field database for datatable searchable
+  var $order = array('STO' => 'asc'); // default order
+
   public function get_sto(){
     $this->db->distinct();
     $this->db->select('STO');
@@ -20,30 +25,39 @@ class M_teknisi extends CI_Model{
     $lat2=$this->input->post('lat');
     $lon2=$this->input->post('lng');
     $odp=array();
+    $sc=array();
     if ($query->num_rows()>0) {
       foreach ($query->result() as $row) {
         $lat1=$row->LATITUDE;
         $lon1=$row->LONGITUDE;
-        if ($this->distance($lat1,$lon1,$lat2,$lon2)<=0.25) {
+        if ($this->distance($lat1,$lon1,$lat2,$lon2)<=0.5) {
+          $this->db->where('ALPRO',$row->PD_NAME);
+          $query1 = $this->db->get('sc');
+          if ($query1->num_rows()>0) {
+            foreach ($query1->result() as $key) {
+              array_push($sc,$key);
+            }
+          }
           array_push($odp,$row);
         }
       }
     }
     return $odp;
   }
-  public function get_sc(){
-    $query = $this->db->get('sc');
-    $lat2=$this->input->post('lat');
-    $lon2=$this->input->post('lng');
-    $sc=array();
-    if ($query->num_rows()>0) {
-      foreach ($query->result() as $row) {
-        $lat1=$row->LATITUDE;
-        $lon1=$row->LONGITUDE;
-        if ($this->distance($lat1,$lon1,$lat2,$lon2)<=0.25) {
-          array_push($sc,$row);
+  public function get_sc($pd_name){
+    if ($pd_name) {
+      $sc = array();
+      for ($i=0; $i <sizeof($pd_name) ; $i++) {
+        $this->db->where('ALPRO',$pd_name[$i]->PD_NAME);
+        $query = $this->db->get('sc');
+        foreach ($query->result() as $result) {
+          array_push($sc,$result);
         }
       }
+    }
+    else {
+      $query = $this->db->get('sc');
+      $sc=$query->result();
     }
     return $sc;
   }
@@ -68,8 +82,31 @@ class M_teknisi extends CI_Model{
     $kilo = $dist * 60 * 1.1515 * 1.609344;
     return $kilo;
   }
+  public function count_all(){
+      $this->db->from($this->table);
+      return $this->db->count_all_results();
+    }
+  function get_datatables(){
+      $this->_get_datatables_query();
+      if($_POST['length'] != -1)
+      $this->db->limit($_POST['length'], $_POST['start']);
+      $query = $this->db->get();
+      return $query->result();
+  }
+  function count_filtered(){
+      $this->_get_datatables_query();
+      $query = $this->db->get();
+      return $query->num_rows();
+  }
   private function _get_datatables_query(){
-
+      if ($this->input->post('type')!='all') {
+        $sc=$this->input->post('sc');
+        $where='ALPRO= "'.$sc[0].'"';
+        for ($i=1; $i <sizeof($sc) ; $i++) {
+          $where.='OR ALPRO= "'.$sc[i].'"';
+        }
+        $this->db->where($where);
+      }
       $this->db->from($this->table);
 
       $i = 0;
@@ -104,22 +141,5 @@ class M_teknisi extends CI_Model{
           $order = $this->order;
           $this->db->order_by(key($order), $order[key($order)]);
       }
-  }
-
-  function get_datatables(){
-      $this->_get_datatables_query();
-      if($_POST['length'] != -1)
-      $this->db->limit($_POST['length'], $_POST['start']);
-      $query = $this->db->get();
-      return $query->result();
-  }
-  function count_filtered(){
-      $this->_get_datatables_query();
-      $query = $this->db->get();
-      return $query->num_rows();
-  }
-  public function count_all(){
-      $this->db->from($this->table);
-      return $this->db->count_all_results();
-  }
+    }
 }

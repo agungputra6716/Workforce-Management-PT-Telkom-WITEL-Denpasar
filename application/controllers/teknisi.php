@@ -3,11 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 class Teknisi extends CI_Controller{
-  var $table = 'sc';
-  var $column_order = array(null, 'STO','NO SC','TYPE TRANSAKSI','ALPRO','POTS','SPEEDY','STATUS RESUME','ORDER DATE','NAMA CUST','ALAMAT','LONGITUDE','LATITUDE','TGL INSTALL','TEKNISI','HP TEKNISI','TINDAK LANJUT','SN ONT'); //set column field database for datatable orderable
-  var $column_search = array('STO','NO SC','TYPE TRANSAKSI','ALPRO','POTS','SPEEDY','STATUS RESUME','ORDER DATE','NAMA CUST','ALAMAT','LONGITUDE','LATITUDE','TGL INSTALL','TEKNISI','HP TEKNISI','TINDAK LANJUT','SN ONT'); //set column field database for datatable searchable
-  var $order = array('id' => 'asc'); // default order
-
 
   public function __construct()
   {
@@ -25,11 +20,12 @@ class Teknisi extends CI_Controller{
     echo json_encode($data);
   }
   public function ajax_get_odp(){
-    $data = $this->M_teknisi->get_odp();
+    $data['odp'] = $this->M_teknisi->get_odp();
+    $data['sc'] = $this->M_teknisi->get_sc($data['odp']);
     echo json_encode($data);
   }
   public function ajax_get_sc(){
-    $data = $this->M_teknisi->get_sc();
+    $data = $this->M_teknisi->get_sc($this->input->post('pd_name'));
     echo json_encode($data);
   }
   public function ajax_get_teknisi(){
