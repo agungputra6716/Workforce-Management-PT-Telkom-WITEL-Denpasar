@@ -33,6 +33,7 @@ class Access extends CI_Controller {
 						if($object->USERNAME == $username_temp) {
 							$nama		= $object->NAME;
 							$role		= $object->ROLE;
+							$contact= $object->CONTACT;
 						}
 					}
 					$data = array(
@@ -40,6 +41,7 @@ class Access extends CI_Controller {
 						'is_logged_in' 	=> TRUE,
 						'role'			=> $role,
 						'nama'			=> $nama,
+						'contact' => $contact,
 					);
 					$this->session->set_userdata($data);
 					redirect('maps');

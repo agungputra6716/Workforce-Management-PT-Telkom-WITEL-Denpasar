@@ -10,7 +10,7 @@ class M_teknisi extends CI_Model{
   }
 
   var $table = 'sc';
-  var $column_order = array(null, 'STO','NO_SC','TYPE_TRANSAKSI','ALPRO','POTS','SPEEDY','STATUS_RESUME','ORDER_DATE','NAMA_CUST','ALAMAT','LONGITUDE','LATITUDE','TGL_INSTALL','TEKNISI','HP_TEKNISI','TINDAK_LANJUT','SN_ONT'); //set column field database for datatable orderable
+  var $column_order = array(null,'STO','NO_SC','TYPE_TRANSAKSI','ALPRO','POTS','SPEEDY','STATUS_RESUME','ORDER_DATE','NAMA_CUST','ALAMAT','LONGITUDE','LATITUDE','TGL_INSTALL','TEKNISI','HP_TEKNISI','TINDAK_LANJUT','SN_ONT',null); //set column field database for datatable orderable
   var $column_search = array('STO','NO_SC','TYPE_TRANSAKSI','ALPRO','POTS','SPEEDY','STATUS_RESUME','ORDER_DATE','NAMA_CUST','ALAMAT','LONGITUDE','LATITUDE','TGL_INSTALL','TEKNISI','HP_TEKNISI','TINDAK_LANJUT','SN_ONT'); //set column field database for datatable searchable
   var $order = array('STO' => 'asc'); // default order
 
@@ -37,21 +37,6 @@ class M_teknisi extends CI_Model{
     }
     return $odp;
   }
-  public function get_odp_nearest($lat2,$lng2){
-    $query = $this->db->get('alpro_odp');
-    $odp=array();
-    $sc=array();
-    if ($query->num_rows()>0) {
-      foreach ($query->result() as $row) {
-        $lat1=$row->LATITUDE;
-        $lng1=$row->LONGITUDE;
-        if ($this->distance($lat1,$lng1,$lat2,$lng2)<=0.5) {
-          array_push($odp,$row);
-        }
-      }
-    }
-    return $odp;
-  }
   public function get_sc($pd_name){
     if ($pd_name) {
       $sc = array();
@@ -69,6 +54,11 @@ class M_teknisi extends CI_Model{
     }
     return $sc;
   }
+  public function get_sc_by_no($no_sc){
+    $this->db->where('NO_SC', $no_sc);
+    $query = $this->db->get('sc');
+    return $query->result();
+  }
   public function get_odc($sto,$name){
     if ($name!=NULL){
       $this->db->where('NAME', $name);
@@ -82,6 +72,21 @@ class M_teknisi extends CI_Model{
       array_push($odc,$key);
     }
     return $odc;
+  }
+  public function get_odp_nearest($lat2,$lng2){
+    $query = $this->db->get('alpro_odp');
+    $odp=array();
+    $sc=array();
+    if ($query->num_rows()>0) {
+      foreach ($query->result() as $row) {
+        $lat1=$row->LATITUDE;
+        $lng1=$row->LONGITUDE;
+        if ($this->distance($lat1,$lng1,$lat2,$lng2)<=0.5) {
+          array_push($odp,$row);
+        }
+      }
+    }
+    return $odp;
   }
   public function get_teknisi($username){
     $this->db->where('USERNAME', $username);
@@ -115,11 +120,23 @@ class M_teknisi extends CI_Model{
   private function _get_datatables_query(){
       if ($this->input->post('type')!='all') {
         $sc=$this->input->post('sc');
-        $where='ALPRO = "'.$sc[0].'"';
+        if (sizeof($sc)==1) $where='ALPRO = "'.$sc[0].'" ';
+        else $where='(ALPRO = "'.$sc[0].'" ';
+
         for ($i=1; $i <sizeof($sc) ; $i++) {
-          $where.='OR ALPRO= "'.$sc[$i].'"';
+          if ($i==(sizeof($sc)-1)) $where.='OR ALPRO = "'.$sc[$i].'")';
+          else $where.='OR ALPRO = "'.$sc[$i].'" ';
         }
         $this->db->where($where);
+        if ($this->input->post('type')=='PI') {
+          $this->db->where('STATUS_RESUME','Process OSS (Provision Issued)');
+        }
+        else if($this->input->post('type')=='ACCOM'){
+          $this->db->where('STATUS_RESUME','ACCOM');
+        }
+      }
+      else {
+        $this->db->where('STATUS_RESUME','ACCOM');
       }
       $this->db->from($this->table);
 
@@ -156,4 +173,17 @@ class M_teknisi extends CI_Model{
           $this->db->order_by(key($order), $order[key($order)]);
       }
     }
+  public function do_sc(){
+    $data=array(
+      "STATUS_RESUME"=>'ACCOM',
+      "TGL_INSTALL"=>$this->input->post('TANGGAL_INSTALL'),
+      "TEKNISI"=>$this->input->post('TEKNISI'),
+      "HP_TEKNISI"=>$this->input->post('HP_TEKNISI'),
+      "TINDAK_LANJUT"=>$this->input->post('TINDAK_LANJUT'),
+      "SN_ONT"=>$this->input->post('SN_ONT')
+    );
+    $this->db->where('NO_SC', $this->input->post('NO_SC'));
+    $this->db->update('sc', $data);
+    return $this->db->affected_rows();
+  }
 }

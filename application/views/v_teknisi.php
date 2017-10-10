@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -26,7 +26,7 @@
         html,
         body,
         .view {
-            height: 90.6%;
+            height: 90.4%;
             width: 100%;
         }
         /* Navigation*/
@@ -87,9 +87,7 @@
         <ul>
           <li><a href="#" id='show_my_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_my_cluster"></i> Show My Cluster</a></li>
           <li><a href="#" id='search_cluster' class="waves-effect"><i class="fa fa-search" id="token_show_my_cluster"></i> Search Cluster</a></li>
-          <li><a href="#" id='show_nearest_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_nearest_cluster"></i> Show Nearest Cluster</a></li>
-          <li><a href="#" id='show_most_pi_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_most_pi_cluster"></i> Show Most PI Cluster</a></li>
-          <li><a href="#" id='show_sc_table' class="waves-effect"><i class="fa fa-table" id="token_show_nearest_cluster"></i> Show SC Table</a></li>
+          <li><a href="#" id='show_sc_table' class="waves-effect"><i class="fa fa-table" id="token_show_sc_table"></i> Show SC Table</a></li>
           <!-- <li><a href="#" id='show_location' class="waves-effect"><i class="fa fa-circle-o" id="token_show_location"></i> Show All Locations</a></li> -->
         </ul>
       </div>
@@ -128,6 +126,54 @@
     </ul>
   </div>
 </section>
+
+<div class="modal fade" id="modal_do_sc" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 id="header_do_sc" class="modal-title white-text w-100 font-bold py-2">KERJAKAN</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                </button>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body">
+              <form id="form_do_sc" class="" action="" method="post">
+                <input type="hidden" id="NO_SC" name="NO_SC" value="">
+                <div class="md-form">
+                  <input required type="text" id="TANGGAL_INSTALL" name="TANGGAL_INSTALL" class="form-control datepicker validate">
+                  <label data-error="Silahkan isi tanggal install" for="date-picker">Tanggal Install</label>
+                </div>
+                <div class="md-form">
+                  <input type="text" id="DO_TEKNISI" name="TEKNISI" class="form-control validate" value="<?php echo $this->session->userdata('nama') ?>" readonly>
+                  <label for="TEKNISI">TEKNISI</label>
+                </div>
+                <div class="md-form">
+                  <input type="text" id="DO_HP_TEKNISI" name="HP_TEKNISI" class="form-control validate" value="<?php echo $this->session->userdata('contact') ?>" readonly>
+                  <label for="HP_TEKNISI">HP TEKNISI</label>
+                </div>
+                <div class="md-form">
+                  <input type="text" required id="DO_TINDAK_LANJUT" name="TINDAK_LANJUT" class="form-control validate" value="">
+                  <label data-error="Kolom Tindak Lanjut belum diisi" for="TINDAK_LANJUT">TINDAK LANJUT</label>
+                </div>
+                <div class="md-form">
+                  <input type="text" required id="DO_SN_ONT" name="SN_ONT" class="form-control validate" value="">
+                  <label data-error="Kolom SN ONT belum diisi" for="SN_ONT">SN ONT</label>
+                </div>
+              </form>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer justify-content-center">
+                <button type="submit" id="btn_do_sc"class="btn btn-outline-secondary-modal waves-effect">Send <i class="fa fa-paper-plane-o ml-1"></i></button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+
 <div class="modal fade" id="modal_search_cluster" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog cascading-modal" role="document">
         <!--Content-->
@@ -145,23 +191,19 @@
               <form class="" action="" method="post">
                 <div class="md-form form-sm">
                   <div class="row">
-                    <div class="col col-lg-1 col-md-1 col-sm-1 col-xsm-1">
-                      <i class="fa fa-home prefix"></i>
-                    </div>
-                    <div class="col col-lg-11 col-md-11 col-sm-11 col-xsm-11">
-                      <select class="mdb-select colorful-select dropdown-danger" name="select_sto" id="select_sto">
+                    <div class="col col-lg-12 col-md-12 col-sm-12 col-xsm-12">
+                      <select id="select_sto" class="mdb-select colorful-select dropdown-danger" name="select_sto" id="select_sto">
                         <option value="">Select STO</option>
                       </select>
+                      <label for="select_sto">Select STO</label>
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col col-lg-1 col-md-1 col-sm-1 col-xsm-1">
-                      <i class="fa fa-flag"></i>
-                    </div>
-                    <div class="col col-lg-11 col-md-11 col-sm-11 col-xsm-11">
-                      <select class="mdb-select colorful-select dropdown-danger" name="select_odc" id="select_odc">
+                    <div class="col col-lg-12 col-md-12 col-sm-12 col-xsm-12">
+                      <select id="select_odc" class="mdb-select colorful-select dropdown-danger" name="select_odc" id="select_odc">
                         <option value="">Select ODC</option>
                       </select>
+                      <label for="select_odc">Select ODC</label>
                     </div>
                   </div>
                 </div>
@@ -213,6 +255,7 @@
                   <th>HP TEKNISI</th>
                   <th>TINDAK LANJUT</th>
                   <th>SN ONT</th>
+                  <th id="teknisi_action">ACTION</th>
               </tr>
           </thead>
           <tbody>
@@ -225,7 +268,7 @@
 </div>
 
 <div class="modal fade" style="height:700px;"id="modal_manage_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-notify modal-danger modal-lg" role="document">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
     <!--Content-->
     <div class="modal-content">
       <!--Header-->
@@ -242,7 +285,7 @@
         <table id="tb_user" style="height:300px;width:100%;"class="table display table-hover table-responsive" cellspacing="0" width="100%">
           <thead>
               <tr>
-                  <th>No</th>
+                  <th>NO</th>
                   <th>USERNAME</th>
                   <th>NAME</th>
                   <th>ROLE </th>
@@ -294,9 +337,14 @@
   var cluster;
   var num_normal=0;
   var num_pi=0;
+  var current;
   var username="<?php echo $this->session->userdata('username') ?>";
 
   $(document).ready(function(){
+    $('.datepicker').pickadate({
+      format:'dd/mm/yyyy',
+      formatSubmit: 'dd/mm/yyyy'
+    });
     if ('<?php echo $this->session->userdata('role') ?>'=='TEKNISI') {
       $('#show_location').remove();
       $('#btn_manage_user').remove();
@@ -305,8 +353,8 @@
     }
     else if('<?php echo $this->session->userdata('role') ?>'=='ADMIN'){
       $('#show_my_cluster').remove();
-      $('#show_nearest_cluster').remove();
       $('#show_my_cluster').remove();
+      $('#teknisi_action').remove();
     }
     $(".button-collapse").sideNav();
     $('#click_on_map').click(function(){
@@ -422,6 +470,26 @@
     e.preventDefault();
     show_data_table_user();
   });
+  $('#btn_do_sc').click(function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: '<?php echo base_url('TEKNISI/ajax_do_sc') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: $('#form_do_sc').serialize(),
+      success:function(data){
+        $('#modal_do_sc').modal('hide');
+        if (toogle_show_location==1) {
+          setMapOnAll(null);
+        }
+        get_odc(current);
+        toastr.success('Data SC berhasil diupdate!');
+      },
+      error:function(){
+        alert('error do sc');
+      }
+    });
+  });
 
   function myMap() {
     var mapProp= {
@@ -452,6 +520,7 @@
       success:function(data){
         is_finished=false;
         $('#slide-out').sideNav('hide');
+        current=data[0];
         get_odp(parseFloat(data[0].LATITUDE),parseFloat(data[0].LONGITUDE));
         create_circle(data[0]);
       },
@@ -496,7 +565,7 @@
         is_finished=true;
       },
       error:function(){
-        alert('error LELE');
+        alert('error get ODP');
       }
     });
 
@@ -535,20 +604,41 @@
             '</div>'+
             '<div class="row">'+
               '<div class="col col-lg-12">'+
-                '<span class="keterangan">ODP Name</span>'+
-                '<input type="text" id="odp_name" name="odp_name" value="'+data.PD_NAME+'" class="form-control" readonly>'+
+                '<span class="keterangan">PD Name</span>'+
+                '<input type="text" id="pd_name" name="pd_name" value="'+data.PD_NAME+'" class="form-control" readonly>'+
               '</div>'+
             '</div>'+
-            '<div class="row">'+
-              '<div class="col col-lg-6">'+
-                '<span class="keterangan">Status</span>'+
-                '<input type="text" id="alamat" name="alamat" value="'+data.STATUS_ODP+'" class="form-control" readonly>'+
-              '</div>'+
-              '<div class="col col-lg-6">'+
-                '<span class="keterangan">Last Update Status</span>'+
-                '<input type="date" id="alamat" name="alamat" value="'+data.UPDATE_DATE+'" class="form-control" readonly>'+
-              '</div>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div class="col col-lg-6">'+
+              '<span class="keterangan">Status ODP</span>'+
+              '<input type="text" id="status_odp" name="status_odp" value="'+data.STATUS_ODP+'" class="form-control" readonly>'+
             '</div>'+
+            '<div class="col col-lg-6">'+
+              '<span class="keterangan">F OLT</span>'+
+              '<input type="text" id="f_olt" name="f_olt" value="'+data.F_OLT+'" class="form-control" readonly>'+
+            '</div>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div class="col col-lg-6">'+
+              '<span class="keterangan">QR Code OPD</span>'+
+              '<input type="text" id="qr_code_odp" name="qr_code_odp" value="'+data.QR_CODE_ODP+'" class="form-control" readonly>'+
+            '</div>'+
+            '<div class="col col-lg-6">'+
+              '<span class="keterangan">Tipe GPON</span>'+
+              '<input type="text" id="tipe_gpon" name="tipe_gpon" value="'+data.TIPE_GPON+'" class="form-control" readonly>'+
+            '</div>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div class="col col-lg-6">'+
+              '<span class="keterangan">IP GPON</span>'+
+              '<input type="text" id="ip_gpon" name="ip_gpon" value="'+data.IP_GPON+'" class="form-control" readonly>'+
+            '</div>'+
+            '<div class="col col-lg-6">'+
+              '<span class="keterangan">Port GPON</span>'+
+              '<input type="text" id="port_gpon" name="port_gpon" value="'+data.PORT_GPON+'" class="form-control" readonly>'+
+            '</div>'+
+          '</div>'+
             '<div class="row">'+
               '<div class="col col-lg-6">'+
                 '<span class="keterangan">Latitude</span>'+
@@ -577,12 +667,12 @@
             '</div>'+
             '<div class="row">'+
               '<div class="col col-lg-6">'+
-                '<span class="keterangan">Jumlah PS</span>'+
-                '<input type="text" id="num_normal" name="num_normal" value="'+num_normal+'" class="form-control" readonly>'+
+                '<span class="keterangan">Jumlah ACCOM</span>'+
+                '<input type="text" onclick="show_data_table_sc(\'ACCOM\')" id="num_normal" name="num_normal" value="'+num_normal+'" class="form-control" readonly>'+
               '</div>'+
               '<div class="col col-lg-6">'+
                 '<span class="keterangan">Jumlah PI</span>'+
-                '<input type="text" onclick="show_data_table_sc('+null+')" id="num_pi" name="num_pi" value="'+num_pi+'" class="form-control" readonly>'+
+                '<input type="text" onclick="show_data_table_sc(\'PI\')" id="num_pi" name="num_pi" value="'+num_pi+'" class="form-control" readonly>'+
               '</div>'+
             '</div>'+
             '<div class="row">'+
@@ -641,6 +731,9 @@
         maxWidth:400,
       });
       click_overlay(map,cluster,'circle');
+      if (num_pi==0) {
+        toastr.info('Silahkan klik tombol Cari Cluster Terdekat karena di cluster anda tidak ada SC berstatus PI!');
+      }
     }
     else {
       setTimeout(function(){create_circle(data)},100);
@@ -723,6 +816,7 @@
     if (toogle_show_location==1) {
       setMapOnAll(null);
     }
+    toastr.info('Harap tunggu, proses sedang berjalan');
     num_pi=0;num_normal=0;
     $.ajax({
       url: '<?php echo base_url("teknisi/ajax_get_nearest"); ?>',
@@ -734,6 +828,7 @@
       },
       success:function(data){
         is_finished=false;
+        current=data;
         get_odp(parseFloat(data.LATITUDE),parseFloat(data.LONGITUDE));
         create_circle(data);
       },
@@ -742,6 +837,23 @@
       }
     });
     toogle_show_location=1;
+  }
+  function do_sc(no_sc){
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_get_sc_by_no') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: {no_sc: no_sc},
+      success:function(data){
+        $('#NO_SC').val(data[0].NO_SC);
+        $('#header_do_sc').html('Kerjakan SC no '+data[0].NO_SC);
+        $('#modal_sc_table').modal('hide');
+        $('#modal_do_sc').modal('show');
+      },
+      error:function(){
+        alert('error do sc');
+      }
+    });
   }
   </script>
 </body>

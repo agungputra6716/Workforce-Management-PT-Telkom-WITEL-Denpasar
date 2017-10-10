@@ -28,49 +28,55 @@ class Teknisi extends CI_Controller{
     $data = $this->M_teknisi->get_sc($this->input->post('pd_name'));
     echo json_encode($data);
   }
+  public function ajax_get_sc_by_no(){
+    $data = $this->M_teknisi->get_sc_by_no($this->input->post('no_sc'));
+    echo json_encode($data);
+  }
   public function ajax_get_teknisi(){
     $data = $this->M_teknisi->get_teknisi($this->input->post('username'));
     echo json_encode($data);
   }
-  public function ajax_list()
-    {
-      $list = $this->M_teknisi->get_datatables();
-      $data = array();
-      $no = $_POST['start'];
-      foreach ($list as $key) {
-        $no++;
-        $row = array();
-        $row[] = $no;
-        $row[] = $key->STO;
-        $row[] = $key->NO_SC;
-        $row[] = $key->TYPE_TRANSAKSI;
-        $row[] = $key->ALPRO;
-        $row[] = $key->POTS;
-        $row[] = $key->SPEEDY;
-        $row[] = $key->STATUS_RESUME;
-        $row[] = $key->ORDER_DATE;
-        $row[] = $key->NAMA_CUST;
-        $row[] = $key->ALAMAT;
-        $row[] = $key->LONGITUDE;
-        $row[] = $key->LATITUDE;
-        $row[] = $key->TGL_INSTALL;
-        $row[] = $key->TEKNISI;
-        $row[] = $key->HP_TEKNISI;
-        $row[] = $key->TINDAK_LANJUT;
-        $row[] = $key->SN_ONT;
-
-        $data[] = $row;
+  public function ajax_list(){
+    $list = $this->M_teknisi->get_datatables();
+    $data = array();
+    $no = $_POST['start'];
+    foreach ($list as $key) {
+      $no++;
+      $row = array();
+      $row[] = $no;
+      $row[] = $key->STO;
+      $row[] = $key->NO_SC;
+      $row[] = $key->TYPE_TRANSAKSI;
+      $row[] = $key->ALPRO;
+      $row[] = $key->POTS;
+      $row[] = $key->SPEEDY;
+      $row[] = $key->STATUS_RESUME;
+      $row[] = $key->ORDER_DATE;
+      $row[] = $key->NAMA_CUST;
+      $row[] = $key->ALAMAT;
+      $row[] = $key->LONGITUDE;
+      $row[] = $key->LATITUDE;
+      $row[] = $key->TGL_INSTALL;
+      $row[] = $key->TEKNISI;
+      $row[] = $key->HP_TEKNISI;
+      $row[] = $key->TINDAK_LANJUT;
+      $row[] = $key->SN_ONT;
+      if ($this->session->userdata('role')=='TEKNISI') {
+        $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Edit" onclick="do_sc('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i> Kerjakan</a>';
       }
 
-      $output = array(
-                      "draw" => $_POST['draw'],
-                      "recordsTotal" => $this->M_teknisi->count_all(),
-                      "recordsFiltered" => $this->M_teknisi->count_filtered(),
-                      "data" => $data,
-                    );
-      //output to json format
-      echo json_encode($output);
+      $data[] = $row;
     }
+
+    $output = array(
+                    "draw" => $_POST['draw'],
+                    "recordsTotal" => $this->M_teknisi->count_all(),
+                    "recordsFiltered" => $this->M_teknisi->count_filtered(),
+                    "data" => $data,
+                  );
+    //output to json format
+    echo json_encode($output);
+  }
   public function ajax_get_nearest(){
     $data = $this->M_teknisi->get_odc(null,null);
     $odc=array();
@@ -109,6 +115,9 @@ class Teknisi extends CI_Controller{
       $i++;
     }
     echo json_encode($nearest);
+  }
+  public function ajax_do_sc(){
+    echo json_encode($this->M_teknisi->do_sc());  
   }
 
 }
