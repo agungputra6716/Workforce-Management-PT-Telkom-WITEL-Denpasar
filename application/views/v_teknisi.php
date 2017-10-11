@@ -8,6 +8,7 @@
     <title>WFM MAP</title>
 
     <!-- Font Awesome -->
+    <link rel="icon" href="<?php echo base_url('assets/images/telkom.png') ?>">
     <link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
 
     <!-- Bootstrap core CSS -->
@@ -367,7 +368,7 @@
       $('.option_odc').remove();
       var sto= $(this).val();
       $.ajax({
-        url: '<?php echo base_url('teknisi/ajax_get_odc') ?>',
+        url: '<?php echo base_url('Teknisi/ajax_get_odc') ?>',
         type: 'POST',
         dataType: 'JSON',
         data: {
@@ -392,7 +393,7 @@
     if(toogle_show_location==0){
       num_pi=0;num_normal=0;
       $.ajax({
-        url: '<?php echo base_url('teknisi/ajax_get_teknisi') ?>',
+        url: '<?php echo base_url('Teknisi/ajax_get_teknisi') ?>',
         type: 'POST',
         dataType: 'JSON',
         data:{username:username},
@@ -416,7 +417,7 @@
     num_normal=0;
     num_pi=0;
     $.ajax({
-      url: '<?php echo base_url('teknisi/ajax_get_sto') ?>',
+      url: '<?php echo base_url('Teknisi/ajax_get_sto') ?>',
       type: 'POST',
       dataType: 'JSON',
       success:function(data){
@@ -446,7 +447,7 @@
       toogle_show_location=0;
     }
     $.ajax({
-      url: '<?php echo base_url('teknisi/ajax_get_odc') ?>',
+      url: '<?php echo base_url('Teknisi/ajax_get_odc') ?>',
       type: 'POST',
       dataType: 'JSON',
       data: {
@@ -473,7 +474,7 @@
   $('#btn_do_sc').click(function(e) {
     e.preventDefault();
     $.ajax({
-      url: '<?php echo base_url('TEKNISI/ajax_do_sc') ?>',
+      url: '<?php echo base_url('Teknisi/ajax_do_sc') ?>',
       type: 'POST',
       dataType: 'JSON',
       data: $('#form_do_sc').serialize(),
@@ -510,7 +511,7 @@
   }
   function get_odc(data){ //untuk teknisi
     $.ajax({
-      url: '<?php echo base_url('teknisi/ajax_get_odc') ?>',
+      url: '<?php echo base_url('Teknisi/ajax_get_odc') ?>',
       type: 'POST',
       dataType: 'JSON',
       data: {
@@ -531,7 +532,7 @@
   } //untuk selec di modal
   function get_odp(lat,lng){
     $.ajax({
-      url: '<?php echo base_url('teknisi/ajax_get_odp') ?>',
+      url: '<?php echo base_url('Teknisi/ajax_get_odp') ?>',
       type: 'POST',
       dataType: 'JSON',
       data:{
@@ -572,7 +573,7 @@
   }
   function get_sc(pd_name){
     $.ajax({
-      url: '<?php echo base_url('teknisi/ajax_get_sc') ?>',
+      url: '<?php echo base_url('Teknisi/ajax_get_sc') ?>',
       type: 'POST',
       dataType: 'JSON',
       data:{
@@ -768,7 +769,7 @@
 
            // Load data for the table's content from an Ajax source
            "ajax": {
-               "url": "<?php echo base_url('teknisi/ajax_list')?>",
+               "url": "<?php echo base_url('Teknisi/ajax_list')?>",
                "type": "POST",
                "data": function(data){
                  if (type!='all') {
@@ -819,7 +820,7 @@
     toastr.info('Harap tunggu, proses sedang berjalan');
     num_pi=0;num_normal=0;
     $.ajax({
-      url: '<?php echo base_url("teknisi/ajax_get_nearest"); ?>',
+      url: '<?php echo base_url("Teknisi/ajax_get_nearest"); ?>',
       type: 'POST',
       dataType: 'JSON',
       data: {

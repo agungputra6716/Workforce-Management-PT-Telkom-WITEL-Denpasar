@@ -8,6 +8,7 @@
     <title>WFM MAP</title>
 
     <!-- Font Awesome -->
+    <link rel="icon" href="<?php echo base_url('assets/images/telkom.png') ?>">
     <link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.min.css') ?>">
 
     <!-- Bootstrap core CSS -->
@@ -19,7 +20,7 @@
   </head>
 
   <body class="login-page">
-    <div class="" id="basicExample" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="group" id="basicExample" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
     <div class="modal-dialog" role="document">
         <!--Content-->
         <div class="container" >
