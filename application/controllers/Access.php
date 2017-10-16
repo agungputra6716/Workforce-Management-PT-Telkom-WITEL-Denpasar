@@ -72,20 +72,34 @@ class Access extends CI_Controller {
       $list = $this->M_access->get_datatables();
       $data = array();
       $no = $_POST['start'];
-      foreach ($list as $key) {
-        $no++;
-        $row = array();
-        $row[] = $no;
-        $row[] = $key->USERNAME;
-        $row[] = $key->NAME;
-        $row[] = $key->ROLE;
-        $row[] = $key->STO;
-        $row[] = $key->CLUSTER;
-        $row[] = $key->CLUSTER_HELP;
-        $row[] = $key->WORK_FINISHED;
+			if ($this->input->post('type')!='ALL') {
+				foreach ($list as $key) {
+					$no++;
+					$row = array();
+					$row[] = $no;
+					$row[] = $key->STO;
+					$row[] = $key->CLUSTER;
+					$row[] = $key->USERNAME;
+					$row[] = $key->NAME;					
+					$data[] = $row;
+				}
+			}
+			else {
+				foreach ($list as $key) {
+					$no++;
+					$row = array();
+					$row[] = $no;
+					$row[] = $key->USERNAME;
+					$row[] = $key->NAME;
+					$row[] = $key->ROLE;
+					$row[] = $key->STO;
+					$row[] = $key->CLUSTER;
+					$row[] = $key->CLUSTER_HELP;
+					$row[] = $key->WORK_FINISHED;
 
-        $data[] = $row;
-      }
+					$data[] = $row;
+				}
+			}
 
       $output = array(
                       "draw" => $_POST['draw'],

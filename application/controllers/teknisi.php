@@ -36,6 +36,10 @@ class Teknisi extends CI_Controller{
     $data = $this->M_teknisi->get_teknisi($this->input->post('username'));
     echo json_encode($data);
   }
+  public function ajax_get_avail_teknisi(){
+    $data = $this->M_teknisi->get_avail_teknisi();
+    echo json_encode($data);
+  }
   public function ajax_list(){
     $list = $this->M_teknisi->get_datatables();
     $data = array();
@@ -61,8 +65,8 @@ class Teknisi extends CI_Controller{
       $row[] = $key->HP_TEKNISI;
       $row[] = $key->TINDAK_LANJUT;
       $row[] = $key->SN_ONT;
-      if ($this->session->userdata('role')=='TEKNISI') {
-        $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Edit" onclick="do_sc('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i> Kerjakan</a>';
+      if (($this->session->userdata('role')=='HELP DESK')&&($key->STATUS_RESUME=='PI Ready')) {
+        $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Assign" onclick="assign_teknisi('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i> Assign Teknisi</a>';
       }
 
       $data[] = $row;
@@ -72,6 +76,85 @@ class Teknisi extends CI_Controller{
                     "draw" => $_POST['draw'],
                     "recordsTotal" => $this->M_teknisi->count_all(),
                     "recordsFiltered" => $this->M_teknisi->count_filtered(),
+                    "data" => $data,
+                  );
+    //output to json format
+    echo json_encode($output);
+  }
+  public function ajax_list_pi(){
+    $list = $this->M_teknisi->get_datatables_pi();
+    $data = array();
+    $no = $_POST['start'];
+    foreach ($list as $key) {
+      $no++;
+      $row = array();
+      $row[] = $no;
+      $row[] = $key->STO;
+      $row[] = $key->NO_SC;
+      $row[] = $key->TYPE_TRANSAKSI;
+      $row[] = $key->ALPRO;
+      $row[] = $key->POTS;
+      $row[] = $key->SPEEDY;
+      $row[] = $key->STATUS_RESUME;
+      $row[] = $key->ORDER_DATE;
+      $row[] = $key->NAMA_CUST;
+      $row[] = $key->ALAMAT;
+      $row[] = $key->LONGITUDE;
+      $row[] = $key->LATITUDE;
+      $row[] = $key->TGL_INSTALL;
+      $row[] = $key->TEKNISI;
+      $row[] = $key->HP_TEKNISI;
+      $row[] = $key->TINDAK_LANJUT;
+      $row[] = $key->SN_ONT;
+      $row[] = '';
+
+
+      $data[] = $row;
+    }
+
+    $output = array(
+                    "draw" => $_POST['draw'],
+                    "recordsTotal" => $this->M_teknisi->count_all(),
+                    "recordsFiltered" => $this->M_teknisi->count_filtered_pi(),
+                    "data" => $data,
+                  );
+    //output to json format
+    echo json_encode($output);
+  }
+  public function ajax_get_inbox(){
+    $list = $this->M_teknisi->get_inbox();
+    $data = array();
+    $no = $_POST['start'];
+    foreach ($list as $key) {
+      $no++;
+      $row = array();
+      $row[] = $no;
+      $row[] = $key->STO;
+      $row[] = $key->NO_SC;
+      $row[] = $key->TYPE_TRANSAKSI;
+      $row[] = $key->ALPRO;
+      $row[] = $key->POTS;
+      $row[] = $key->SPEEDY;
+      $row[] = $key->STATUS_RESUME;
+      $row[] = $key->ORDER_DATE;
+      $row[] = $key->NAMA_CUST;
+      $row[] = $key->ALAMAT;
+      $row[] = $key->LONGITUDE;
+      $row[] = $key->LATITUDE;
+      $row[] = $key->TGL_INSTALL;
+      $row[] = $key->TEKNISI;
+      $row[] = $key->HP_TEKNISI;
+      $row[] = $key->TINDAK_LANJUT;
+      $row[] = $key->SN_ONT;
+      $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="get_here" onclick="do_sc('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i> Get Here</a>';
+
+      $data[] = $row;
+    }
+
+    $output = array(
+                    "draw" => $_POST['draw'],
+                    "recordsTotal" => $this->M_teknisi->count_all(),
+                    "recordsFiltered" => $this->M_teknisi->count_filtered_inbox(),
                     "data" => $data,
                   );
     //output to json format
@@ -117,7 +200,9 @@ class Teknisi extends CI_Controller{
     echo json_encode($nearest);
   }
   public function ajax_do_sc(){
-    echo json_encode($this->M_teknisi->do_sc());  
+    echo json_encode($this->M_teknisi->do_sc());
   }
-
+  public function ajax_assign_teknisi(){
+    echo json_encode($this->M_teknisi->assign_teknisi());
+  }
 }

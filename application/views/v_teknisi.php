@@ -75,32 +75,146 @@
 
     <li><a class="social collapsible-header waves-effect arrow-r"><i class="fa fa-user mr-1"></i><i class="fa fa-angle-down rotate-icon"></i>  <?php echo $this->session->userdata('nama') ?></a>
       <div class="collapsible-body">
-        <ul>
-          <li><a class="collapsible-header waves-effect arrow-r" href="<?php echo base_url('Access/LogOut') ?>"><i class="fa fa-sign-out ml-1"></i> Log Out</a>
+        <ul class="">
+          <li><a class="collapsible-header waves-effect arrow-r" href="<?php echo base_url('Access/LogOut') ?>"><i class="fa fa-sign-out ml-1"></i>Log Out</a>
           </li>
         </ul>
       </div>
     </li>
-    <li id="btn_manage_user"><a class="waves-effect arrow-r" href=""><i class="fa fa-user mr-1"></i> Manage User</a>
+    <li id="btn_manage_user"><a class="waves-effect arrow-r" href=""><i class="fa fa-user mr-1"></i>Manage User</a>
     </li>
-    <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-edit"></i> Aplikasi<i class="fa fa-angle-down rotate-icon"></i></a>
+    <li><a href="#" id='show_my_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_my_cluster"></i>Show My Cluster</a></li>
+    <li><a href="#" id='search_cluster' class="waves-effect"><i class="fa fa-search" id="token_show_my_cluster"></i>Search Cluster</a></li>
+    <li><a href="#" id='show_sc_table' class="waves-effect"><i class="fa fa-table" id="token_show_sc_table"></i>Show PI Table</a></li>
+    <li id="show_pi_by_sto"><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-edit"></i>Show PI By STO<i class="fa fa-angle-down rotate-icon"></i></a>
       <div class="collapsible-body">
-        <ul>
-          <li><a href="#" id='show_my_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_my_cluster"></i> Show My Cluster</a></li>
-          <li><a href="#" id='search_cluster' class="waves-effect"><i class="fa fa-search" id="token_show_my_cluster"></i> Search Cluster</a></li>
-          <li><a href="#" id='show_sc_table' class="waves-effect"><i class="fa fa-table" id="token_show_sc_table"></i> Show SC Table</a></li>
-          <!-- <li><a href="#" id='show_location' class="waves-effect"><i class="fa fa-circle-o" id="token_show_location"></i> Show All Locations</a></li> -->
-        </ul>
-      </div>
-    </li>
-    <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-eye"></i> About<i class="fa fa-angle-down rotate-icon"></i></a>
-      <div class="collapsible-body">
-        <ul>
-          <li><a href="#" class="waves-effect">Introduction</a>
+        <ul class="collapsible collapsible-accordion sub-menu">
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>SMY<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','SMY')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','SMY')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','SMY')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','SMY')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>SAU<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','SAU')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','SAU')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','SAU')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','SAU')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>BNO<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','BNO')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','BNO')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','BNO')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','BNO')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>JBR<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','JBR')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','JBR')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','JBR')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','JBR')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>KLM<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','KLM')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','KLM')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','KLM')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','KLM')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>KUT<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','KUT')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','KUT')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','KUT')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','KUT')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>MMN<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','MMN')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','MMN')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','MMN')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','MMN')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>NDA<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','NDA')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','NDA')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','NDA')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','NDA')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>SWI<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','SWI')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','SWI')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','SWI')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','SWI')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>TOP<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','TOP')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','TOP')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','TOP')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','TOP')">PI Kendala</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="sub-menu collapsible-header waves-effect arrow-r"><i class="fa fa-compass"></i>UBN<i class="fa fa-angle-down rotate-icon"></i></a>
+            <div class="collapsible-body">
+              <ul class="sub-menu">
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','UBN')">PI Ready</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','UBN')">PI Progress</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','UBN')">PI ACCOM</a></li>
+                <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','UBN')">PI Kendala</a></li>
+              </ul>
+            </div>
           </li>
         </ul>
       </div>
     </li>
+    <li id="show_pi_by_status"><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-edit"></i>Show PI By Status<i class="fa fa-angle-down rotate-icon"></i></a>
+      <div class="collapsible-body">
+        <ul class="sub-menu">
+          <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('READY','ALL')">PI Ready</a></li>
+          <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('PROGRESS','ALL')">PI Progress</a></li>
+          <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('ACCOM','ALL')">PI ACCOM</a></li>
+          <li><a class="collapsible-header waves-effect arrow-r" onclick="show_data_table_pi('KENDALA','ALL')">PI Kendala</a></li>
+        </ul>
+      </div>
+    </li>
+    <li><a href="#" id='show_teknisi_table' class="waves-effect"><i class="fa fa-calendar" id="token_show_teknisi_table"></i>Show Teknisi Today</a></li>
+    <li><a href="#" id='summary' class="waves-effect"><i class="fa fa-book" id="token_summary"></i>Summary</a></li>
+    <li><a href="#" id='inbox' class="waves-effect"><i class="fa fa-envelope-o" id="token_summary"></i>Job Inbox</a></li>
   </ul>
 </li>
 <!--/. Side navigation links -->
@@ -114,19 +228,43 @@
 </nav>
 
 <div id="googleMap" style="width:100%;height:100%;"></div>
-<section>
-  <div class="fixed-action-btn" style="bottom: 80px; right: 2px;">
-    <a class="btn-floating btn-lg red waves-effect waves-light">
-      <i class="fa fa-pencil"></i>
-    </a>
-    <ul>
-      <li><a class="btn-floating red waves-effect waves-light" style="transform: scaleY(0.0001) scaleX(0.0001) translateY(40px) translateX(0px); opacity: 0;"><i class="fa fa-star"></i></a></li>
-      <li><a class="btn-floating yellow darken-1 waves-effect waves-light" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="fa fa-user"></i></a></li>
-      <li><a class="btn-floating green waves-effect waves-light" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="fa fa-envelope"></i></a></li>
-      <li><a class="btn-floating blue waves-effect waves-light" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="fa fa-shopping-cart"></i></a></li>
-    </ul>
-  </div>
-</section>
+
+<div class="modal fade" id="modal_assign_teknisi" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 id="header_do_sc" class="modal-title white-text w-100 font-bold py-2">ASSIGN TEKNISI</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                </button>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body">
+              <form id="form_assign_teknisi" class="" action="" method="post">
+                <div class="md-form">
+                  <input type="hidden" id="NAME_TEKNISI" name="NAME_TEKNISI" value="">
+                  <input type="hidden" id="HP_TEKNISI" name="HP_TEKNISI" value="">
+                  <input type="hidden" id="NO_SC_SC" name="NO_SC_SC" value="">
+
+                  <select id="select_teknisi" class="mdb-select colorful-select dropdown-danger" name="select_teknisi">
+                    <option value="">Select Teknisi</option>
+                  </select>
+                  <label for="TEKNISI">TEKNISI</label>
+                </div>
+
+              </form>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer justify-content-center">
+                <button type="submit" id="btn_assign_teknisi"class="btn btn-outline-secondary-modal waves-effect">Send <i class="fa fa-paper-plane-o ml-1"></i></button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
 
 <div class="modal fade" id="modal_do_sc" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
@@ -157,7 +295,7 @@
                   <label for="HP_TEKNISI">HP TEKNISI</label>
                 </div>
                 <div class="md-form">
-                  <input type="text" required id="DO_TINDAK_LANJUT" name="TINDAK_LANJUT" class="form-control validate" value="">
+                  <textarea type="text" required id="DO_TINDAK_LANJUT" name="TINDAK_LANJUT" class="form-control validate md-textarea" value=""></textarea>
                   <label data-error="Kolom Tindak Lanjut belum diisi" for="TINDAK_LANJUT">TINDAK LANJUT</label>
                 </div>
                 <div class="md-form">
@@ -220,13 +358,13 @@
 </div>
 
 <!-- Central Modal Medium Success -->
-<div class="modal fade" style="height:700px;"id="modal_sc_table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" style="height:700px;"id="modal_table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-notify modal-danger modal-fluid" role="document">
     <!--Content-->
     <div class="modal-content">
       <!--Header-->
       <div class="modal-header">
-        <p class="heading lead">SC Table</p>
+        <p class="heading lead">PI Table</p>
 
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true" class="white-text">&times;</span>
@@ -256,7 +394,7 @@
                   <th>HP TEKNISI</th>
                   <th>TINDAK LANJUT</th>
                   <th>SN ONT</th>
-                  <th id="teknisi_action">ACTION</th>
+                  <th id="action">ACTION</th>
               </tr>
           </thead>
           <tbody>
@@ -305,6 +443,40 @@
   </div>
 </div>
 
+<div class="modal fade" style="height:700px;"id="modal_teknisi_today" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">TEKNISI TODAY</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body sc_table table-responsive">
+        <table id="tb_teknisi" style="height:300px;width:100%;"class="table display table-hover table-responsive" cellspacing="0" width="100%">
+          <thead>
+              <tr>
+                  <th>NO</th>
+                  <th>STO</th>
+                  <th>CLUSTER</th>
+                  <th>USERNAME</th>
+                  <th>NAME</th>
+              </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer id='footer' class="page-footer center-on-small-only fluid-bottom danger-color-dark">
 
 
@@ -336,26 +508,40 @@
   var prev_iw=false;
   var iw_content;
   var cluster;
-  var num_normal=0;
-  var num_pi=0;
+  var num_accom=0;
+  var num_ready=0;
+  var num_progress=0;
+  var num_kendala=0;
   var current;
+  var current_sc;
   var username="<?php echo $this->session->userdata('username') ?>";
 
   $(document).ready(function(){
     $('.datepicker').pickadate({
-      format:'dd/mm/yyyy',
-      formatSubmit: 'dd/mm/yyyy'
+      format:'dd-mm-yyyy',
+      formatSubmit: 'dd-mm-yyyy'
     });
     if ('<?php echo $this->session->userdata('role') ?>'=='TEKNISI') {
       $('#show_location').remove();
       $('#btn_manage_user').remove();
       $('#search_cluster').remove();
       $('#show_sc_table').remove();
+      $('#show_pi_by_sto').remove();
+      $('#summary').remove();
+      $('#show_pi_by_sto').remove();
+      $('#show_pi_by_status').remove();
+      $('#show_teknisi_table').remove();
     }
     else if('<?php echo $this->session->userdata('role') ?>'=='ADMIN'){
       $('#show_my_cluster').remove();
+      $('#action').remove();
+      $('#inbox').remove();
+    }
+    else if('<?php echo $this->session->userdata('role') ?>'=='HELP DESK'){
       $('#show_my_cluster').remove();
       $('#teknisi_action').remove();
+      $('#btn_manage_user').remove();
+      $('#inbox').remove();
     }
     $(".button-collapse").sideNav();
     $('#click_on_map').click(function(){
@@ -391,7 +577,7 @@
   $('#show_my_cluster').click(function(e) {
     e.preventDefault();
     if(toogle_show_location==0){
-      num_pi=0;num_normal=0;
+      num_ready=0;num_accom=0;
       $.ajax({
         url: '<?php echo base_url('Teknisi/ajax_get_teknisi') ?>',
         type: 'POST',
@@ -414,8 +600,8 @@
   $('#search_cluster').click(function(e) {
     e.preventDefault();
     $('#slide-out').sideNav('hide');
-    num_normal=0;
-    num_pi=0;
+    num_accom=0;
+    num_ready=0;
     $.ajax({
       url: '<?php echo base_url('Teknisi/ajax_get_sto') ?>',
       type: 'POST',
@@ -461,6 +647,7 @@
         var lnglng=parseFloat(data[0].LONGITUDE);
         get_odp(latlat,lnglng);
         create_circle(data[0]);
+        current=data[0];
       },
       error:function(data){
         alert('error get cluster');
@@ -469,7 +656,7 @@
   });
   $('#btn_manage_user').click(function(e) {
     e.preventDefault();
-    show_data_table_user();
+    show_data_table_user('ALL');
   });
   $('#btn_do_sc').click(function(e) {
     e.preventDefault();
@@ -490,6 +677,53 @@
         alert('error do sc');
       }
     });
+  });
+  $('#btn_assign_teknisi').click(function(e) {
+    e.preventDefault();
+    var username=$('#select_teknisi').val();
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_get_teknisi') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: {username: username},
+      success:function(data){
+        console.log(data);
+        $('#NAME_TEKNISI').val(data[0].NAME);
+        $('#NO_SC_SC').val(current_sc.NO_SC);
+        $('#HP_TEKNISI').val(data[0].CONTACT);
+        $.ajax({
+          url: '<?php echo base_url('Teknisi/ajax_assign_teknisi') ?>',
+          type: 'POST',
+          dataType: 'JSON',
+          data: $('#form_assign_teknisi').serialize(),
+          success:function(data){
+            if (toogle_show_location==1) {
+              setMapOnAll(null);
+            }
+            is_finished=false;
+            $('#modal_assign_teknisi').modal('hide');
+            get_odp(parseFloat(current.LATITUDE),parseFloat(current.LONGITUDE));
+            create_circle(current);
+            alert('berhasil');
+          },
+          error:function(){
+
+          }
+        });
+
+      },
+      error:function(){
+
+      }
+    });
+  });
+  $('#inbox').click(function(e) {
+    e.preventDefault();
+    show_inbox();
+  });
+  $('#show_teknisi_table').click(function(e) {
+    e.preventDefault();
+    show_data_table_user('TEKNISI');
   });
 
   function myMap() {
@@ -521,7 +755,6 @@
       success:function(data){
         is_finished=false;
         $('#slide-out').sideNav('hide');
-        current=data[0];
         get_odp(parseFloat(data[0].LATITUDE),parseFloat(data[0].LONGITUDE));
         create_circle(data[0]);
       },
@@ -542,6 +775,11 @@
       success:function(data){
         toogle_show_location=1;
         array_sc = [];
+        is_finished=false;
+        num_ready=0;
+        num_accom=0;
+        num_progress=0;
+        num_kendala=0;
         for (var i = 0; i < data['odp'].length; i++) {
           var lat = data['odp'][i].LATITUDE;
           var lng = data['odp'][i].LONGITUDE;
@@ -559,8 +797,10 @@
         }
 
         for (var i = 0; i < data['sc'].length; i++) {
-          if (data['sc'][i].STATUS_RESUME=='Process OSS (Provision Issued)') num_pi++;
-          else num_normal++;
+          if (data['sc'][i].STATUS_RESUME=='PI Ready') num_ready++;
+          else if (data['sc'][i].STATUS_RESUME=='PI ACCOM') num_accom++;
+          else if (data['sc'][i].STATUS_RESUME=='PI Progress') num_progress++;
+          else if (data['sc'][i].STATUS_RESUME=='PI Kendala') num_kendala++;
           array_sc.push(data['sc'][i].ALPRO);
         }
         is_finished=true;
@@ -581,8 +821,8 @@
       },
       success:function(data){
         for (var i = 0; i < data.length; i++) {
-          if (data[i].STATUS_RESUME=='Process OSS (Provision Issued)') num_pi++;
-          else num_normal++;
+          if (data[i].STATUS_RESUME=='PI Ready') num_ready++;
+          else num_accom++;
         }
         array_sc.push(data);
         is_finished=true;
@@ -668,17 +908,27 @@
             '</div>'+
             '<div class="row">'+
               '<div class="col col-lg-6">'+
-                '<span class="keterangan">Jumlah ACCOM</span>'+
-                '<input type="text" onclick="show_data_table_sc(\'ACCOM\')" id="num_normal" name="num_normal" value="'+num_normal+'" class="form-control" readonly>'+
+                '<span class="keterangan">Jumlah PI ACCOM</span>'+
+                '<input type="text" onclick="show_data_table_sc(\'ACCOM\')" id="num_accom" name="num_accom" value="'+num_accom+'" class="form-control" readonly>'+
               '</div>'+
               '<div class="col col-lg-6">'+
-                '<span class="keterangan">Jumlah PI</span>'+
-                '<input type="text" onclick="show_data_table_sc(\'PI\')" id="num_pi" name="num_pi" value="'+num_pi+'" class="form-control" readonly>'+
+                '<span class="keterangan">Jumlah PI Ready</span>'+
+                '<input type="text" onclick="show_data_table_sc(\'READY\')" id="num_ready" name="num_ready" value="'+num_ready+'" class="form-control" readonly>'+
               '</div>'+
             '</div>'+
             '<div class="row">'+
               '<div class="col col-lg-6">'+
-                '<span class="keterangan">Latitude</span>'+
+                '<span class="keterangan">Jumlah PI Progress</span>'+
+                '<input type="text" onclick="show_data_table_sc(\'PROGRESS\')" id="num_accom" name="num_accom" value="'+num_progress+'" class="form-control" readonly>'+
+              '</div>'+
+              '<div class="col col-lg-6">'+
+                '<span class="keterangan">Jumlah PI Kendala</span>'+
+                '<input type="text" onclick="show_data_table_sc(\'KENDALA\')" id="num_ready" name="num_ready" value="'+num_kendala+'" class="form-control" readonly>'+
+              '</div>'+
+            '</div>'+
+            '<div class="row">'+
+            '<div class="col col-lg-6">'+
+              '<span class="keterangan">Latitude</span>'+
                 '<input type="text" id="lat" name="lat" value="'+data.LATITUDE+'" class="form-control" readonly>'+
               '</div>'+
               '<div class="col col-lg-6">'+
@@ -702,13 +952,13 @@
   }
   function create_circle(data){
     if (is_finished) {
-      if ((num_pi/(num_pi+num_normal))<=0.5) {
+      if ((num_ready/(num_ready+num_accom+num_kendala+num_progress))<=0.5) {
         var warna='#007E33'
       }
-      else if ((num_pi/(num_pi+num_normal))<=0.75){
+      else if ((num_ready/(num_ready+num_accom))<=0.75){
         var warna='#FF8800'
       }
-      else if ((num_pi/(num_pi+num_normal))<=1){
+      else if ((num_ready/(num_ready+num_accom))<=1){
         var warna='#CC0000'
       }
       var latlat=parseFloat(data.LATITUDE);
@@ -732,8 +982,8 @@
         maxWidth:400,
       });
       click_overlay(map,cluster,'circle');
-      if (num_pi==0) {
-        toastr.info('Silahkan klik tombol Cari Cluster Terdekat karena di cluster anda tidak ada SC berstatus PI!');
+      if (num_ready==0) {
+        toastr.info('Silahkan klik tombol Cari Cluster Terdekat karena di cluster anda tidak ada PI berstatus PI Ready!');
       }
     }
     else {
@@ -760,8 +1010,97 @@
     });
   }
   function show_data_table_sc(type){
-    $('#modal_sc_table').modal('show');
-      table = $('#sc_table').DataTable({
+    $('#modal_table').modal('show');
+    table = null;
+    table = $('#sc_table').DataTable({
+         "processing": true, //Feature control the processing indicator.
+         "serverSide": true, //Feature control DataTables' server-side processing mode.
+         "bDestroy": true,
+         "order": [], //Initial no order.
+
+         // Load data for the table's content from an Ajax source
+         "ajax": {
+             "url": "<?php echo base_url('Teknisi/ajax_list')?>",
+             "type": "POST",
+             "data": function(data){
+               if (type!='all') {
+                 data.sc = array_sc;
+               }
+               data.type=type;
+             }
+         },
+
+         //Set column definition initialisation properties.
+         "columnDefs": [
+         {
+             "targets": [ -1 ], //last column
+             "orderable": false, //set not orderable
+         },
+         ],
+     });
+    //  $('#sc_table_filter').remove();
+  }
+  function show_data_table_pi(type,sto){
+    $('#modal_table').modal('show');
+    table = null;
+    table = $('#sc_table').DataTable({
+         "processing": true, //Feature control the processing indicator.
+         "serverSide": true, //Feature control DataTables' server-side processing mode.
+         "bDestroy": true,
+         "order": [], //Initial no order.
+
+         // Load data for the table's content from an Ajax source
+         "ajax": {
+             "url": "<?php echo base_url('Teknisi/ajax_list_pi')?>",
+             "type": "POST",
+             "data": function(data){
+               data.type=type;
+               data.sto=sto;
+             }
+         },
+
+         //Set column definition initialisation properties.
+         "columnDefs": [
+         {
+             "targets": [ -1 ], //last column
+             "orderable": false, //set not orderable
+         },
+         ],
+     });
+    //  $('#sc_table_filter').remove();
+  }
+  function show_inbox(){
+    $('#modal_table').modal('show');
+    table = null;
+    table = $('#sc_table').DataTable({
+         "processing": true, //Feature control the processing indicator.
+         "serverSide": true, //Feature control DataTables' server-side processing mode.
+         "bDestroy": true,
+         "order": [], //Initial no order.
+
+         // Load data for the table's content from an Ajax source
+         "ajax": {
+             "url": "<?php echo base_url('Teknisi/ajax_get_inbox')?>",
+             "type": "POST",
+             "data": function(data){
+               data.type='inbox';
+             }
+         },
+
+         //Set column definition initialisation properties.
+         "columnDefs": [
+         {
+             "targets": [ -1 ], //last column
+             "orderable": false, //set not orderable
+         },
+         ],
+     });
+    //  $('#sc_table_filter').remove();
+  }
+  function show_data_table_user(type){
+    if (type=='TEKNISI') {
+      $('#modal_teknisi_today').modal('show');
+      table = $('#tb_teknisi').DataTable({
            "processing": true, //Feature control the processing indicator.
            "serverSide": true, //Feature control DataTables' server-side processing mode.
            "bDestroy": true,
@@ -769,12 +1108,9 @@
 
            // Load data for the table's content from an Ajax source
            "ajax": {
-               "url": "<?php echo base_url('Teknisi/ajax_list')?>",
+               "url": "<?php echo base_url('Access/ajax_user')?>",
                "type": "POST",
                "data": function(data){
-                 if (type!='all') {
-                   data.sc = array_sc;
-                 }
                  data.type=type;
                }
            },
@@ -787,38 +1123,41 @@
            },
            ],
        });
-      //  $('#sc_table_filter').remove();
-  }
-  function show_data_table_user(){
-    $('#modal_manage_user').modal('show');
+    }
+    else {
+      $('#modal_manage_user').modal('show');
       table = $('#tb_user').DataTable({
-           "processing": true, //Feature control the processing indicator.
-           "serverSide": true, //Feature control DataTables' server-side processing mode.
-           "bDestroy": true,
-           "order": [], //Initial no order.
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "bDestroy": true,
+        "order": [], //Initial no order.
 
-           // Load data for the table's content from an Ajax source
-           "ajax": {
-               "url": "<?php echo base_url('Access/ajax_user')?>",
-               "type": "POST",
-           },
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+          "url": "<?php echo base_url('Access/ajax_user')?>",
+          "type": "POST",
+          "data": function(data){
+            data.type=type;
+          }
+        },
 
-           //Set column definition initialisation properties.
-           "columnDefs": [
-           {
-               "targets": [ -1 ], //last column
-               "orderable": false, //set not orderable
-           },
-           ],
-       });
+        //Set column definition initialisation properties.
+        "columnDefs": [
+          {
+            "targets": [ -1 ], //last column
+            "orderable": false, //set not orderable
+          },
+        ],
+      });
       //  $('#sc_table_filter').remove();
+    }
   }
   function search_nearest_cluster(lat,lng){
     if (toogle_show_location==1) {
       setMapOnAll(null);
     }
     toastr.info('Harap tunggu, proses sedang berjalan');
-    num_pi=0;num_normal=0;
+    num_ready=0;num_accom=0;
     $.ajax({
       url: '<?php echo base_url("Teknisi/ajax_get_nearest"); ?>',
       type: 'POST',
@@ -829,9 +1168,9 @@
       },
       success:function(data){
         is_finished=false;
-        current=data;
         get_odp(parseFloat(data.LATITUDE),parseFloat(data.LONGITUDE));
         create_circle(data);
+        current=data;
       },
       error:function(){
         alert('error get nearest cluster')
@@ -848,8 +1187,44 @@
       success:function(data){
         $('#NO_SC').val(data[0].NO_SC);
         $('#header_do_sc').html('Kerjakan SC no '+data[0].NO_SC);
-        $('#modal_sc_table').modal('hide');
+        $('#modal_table').modal('hide');
         $('#modal_do_sc').modal('show');
+      },
+      error:function(){
+        alert('error do sc');
+      }
+    });
+  }
+  function assign_teknisi(no_sc){
+    $('.option_teknisi').remove();
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_get_sc_by_no') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: {no_sc: no_sc},
+      success:function(data){
+        current_sc = data[0];
+        $('#NO_SC_TEKNISI').val(data[0].NO_SC);
+        $.ajax({
+          url: '<?php echo base_url('Teknisi/ajax_get_avail_teknisi') ?>',
+          type: 'POST',
+          dataType: 'JSON',
+          data: {
+            STO: current.STO,
+            CLUSTER: current.NAME
+          },
+          success:function(data){
+            for (var i = 0; i < data.length; i++) {
+              $('#select_teknisi').append("<option class='option_teknisi' value='"+data[i].USERNAME+"'>"+data[i].NAME+"</option>");
+            }
+            $('#select_teknisi').material_select();
+            $('#modal_table').modal('hide');
+            $('#modal_assign_teknisi').modal('show');
+          },
+          error:function() {
+
+          }
+        });
       },
       error:function(){
         alert('error do sc');
