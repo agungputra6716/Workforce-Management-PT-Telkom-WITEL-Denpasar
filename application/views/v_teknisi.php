@@ -85,7 +85,7 @@
     </li>
     <li><a href="#" id='show_my_cluster' class="waves-effect"><i class="fa fa-circle-o" id="token_show_my_cluster"></i>Show My Cluster</a></li>
     <li><a href="#" id='search_cluster' class="waves-effect"><i class="fa fa-search" id="token_show_my_cluster"></i>Search Cluster</a></li>
-    <li><a href="#" id='show_sc_table' class="waves-effect"><i class="fa fa-table" id="token_show_sc_table"></i>Show PI Table</a></li>
+    <li><a href="#" id='show_sc_table' class="waves-effect"><i class="fa fa-table" id="token_show_sc_table"></i>Show PI Table ACCOM</a></li>
     <li id="show_pi_by_sto"><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-edit"></i>Show PI By STO<i class="fa fa-angle-down rotate-icon"></i></a>
       <div class="collapsible-body">
         <ul class="collapsible collapsible-accordion sub-menu">
@@ -357,7 +357,6 @@
     </div>
 </div>
 
-<!-- Central Modal Medium Success -->
 <div class="modal fade" style="height:700px;"id="modal_table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-notify modal-danger modal-fluid" role="document">
     <!--Content-->
@@ -444,7 +443,7 @@
 </div>
 
 <div class="modal fade" style="height:700px;"id="modal_teknisi_today" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+  <div class="modal-dialog modal-notify modal-danger modal-lg" role="document">
     <!--Content-->
     <div class="modal-content">
       <!--Header-->
@@ -472,6 +471,42 @@
 
           </tbody>
       </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" style="height:700px;"id="modal_summary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">SUMMARY</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body sc_table table-responsive tabl-">
+        <table id="tb_summary" style="height:300px;width:100%;"class="table display table-hover table-responsive" cellspacing="0" width="100%">
+          <thead>
+              <tr>
+                  <th>NO</th>
+                  <th>STO</th>
+                  <th>PI Ready</th>
+                  <th>PI Progress</th>
+                  <th>PI ACCOM</th>
+                  <th>PI KENDALA</th>
+              </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+      </table>
+
       </div>
     </div>
   </div>
@@ -724,6 +759,10 @@
   $('#show_teknisi_table').click(function(e) {
     e.preventDefault();
     show_data_table_user('TEKNISI');
+  });
+  $('#summary').click(function(e){
+    e.preventDefault();
+    show_summary();
   });
 
   function myMap() {
@@ -1010,6 +1049,8 @@
     });
   }
   function show_data_table_sc(type){
+    if (type=='all') $('#action').hide();
+    else $('#action').show();
     $('#modal_table').modal('show');
     table = null;
     table = $('#sc_table').DataTable({
@@ -1041,6 +1082,7 @@
     //  $('#sc_table_filter').remove();
   }
   function show_data_table_pi(type,sto){
+    $('#action').hide();
     $('#modal_table').modal('show');
     table = null;
     table = $('#sc_table').DataTable({
@@ -1096,6 +1138,35 @@
          ],
      });
     //  $('#sc_table_filter').remove();
+  }
+  function show_summary(){
+    $('#modal_summary').modal('show');
+    table = null;
+    table = $('#tb_summary').DataTable({
+         "processing": true, //Feature control the processing indicator.
+         "serverSide": true, //Feature control DataTables' server-side processing mode.
+         "bDestroy": true,
+         "order": [], //Initial no order.
+
+         // Load data for the table's content from an Ajax source
+         "ajax": {
+             "url": "<?php echo base_url('Teknisi/ajax_get_summary')?>",
+             "type": "POST",
+             "data": function(data){
+               data.sto='ALL';
+               data.type='SUMMARY';
+             }
+         },
+
+         //Set column definition initialisation properties.
+         "columnDefs": [
+         {
+             "targets": [ -1 ], //last column
+             "orderable": false, //set not orderable
+         },
+         ],
+     });
+     $('#tb_summary_paginate').remove();
   }
   function show_data_table_user(type){
     if (type=='TEKNISI') {

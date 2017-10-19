@@ -140,9 +140,14 @@ class M_teknisi extends CI_Model{
     return $query->num_rows();
   }
   function count_filtered_pi(){
-    $this->_get_datatables_pi_query();
-    $query = $this->db->get();
-    return $query->num_rows();
+    if ($this->input->post('type')=='SUMMARY') {
+      return 11;
+    }
+    else {
+      $this->_get_datatables_pi_query();
+      $query = $this->db->get();
+      return $query->num_rows();
+    }
   }
   function count_filtered_inbox(){
     $this->_get_datatables_query_inbox();
