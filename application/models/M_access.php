@@ -38,15 +38,15 @@ class M_access extends CI_Model {
     }
     private function _get_datatables_query(){
       if ($this->input->post('type')=='TEKNISI') {
-        $column_order = array(null,'STO','CLUSTER','USERNAME','NAME'); //set column field database for datatable orderable
-        $column_search = array('STO','CLUSTER','USERNAME','NAME'); //set column field database for datatable searchable
+        $this->column_order = array(null,'STO','CLUSTER','USERNAME','NAME'); //set column field database for datatable orderable
+        $this->column_search = array('STO','CLUSTER','USERNAME','NAME'); //set column field database for datatable searchable
       }
       else {
-        $column_order = array(null, 'USERNAME','NAME','ROLE','STO','CLUSTER','CLUSTER_HELP','WORK_FINISHED'); //set column field database for datatable orderable
-        $column_search = array('USERNAME','NAME','ROLE','STO','CLUSTER','CLUSTER_HELP','WORK_FINISHED'); //set column field database for datatable searchable
+        $this->column_order = array(null, 'USERNAME','NAME','ROLE','STO','CLUSTER','CLUSTER_HELP','WORK_FINISHED'); //set column field database for datatable orderable
+        $this->column_search = array('USERNAME','NAME','ROLE','STO','CLUSTER','CLUSTER_HELP','WORK_FINISHED'); //set column field database for datatable searchable
       }
       if ($this->input->post('type')!='ALL') {
-        $this->db->where('TGL_KERJA', date('d-m-Y'));
+        $this->db->where('TGL_KERJA', date('d/m/Y'));
         $this->db->from($this->table1);
       }
       else {

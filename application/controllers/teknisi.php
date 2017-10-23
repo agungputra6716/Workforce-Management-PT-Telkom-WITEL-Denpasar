@@ -273,6 +273,7 @@ class Teknisi extends CI_Controller{
   }
   public function ajax_get_nearest(){
     $data = $this->M_teknisi->get_odc(null,null);
+    $temp = array();
     $odc=array();
     $lat1=$this->input->post('lat');
     $lng1=$this->input->post('lng');
@@ -294,9 +295,9 @@ class Teknisi extends CI_Controller{
     $status=false;
     $i=1;
     while($status==false){
-      $data['odp'][$i] = $this->M_teknisi->get_odp_nearest($odc[$i]['LATITUDE'],$odc[$i]['LONGITUDE']);
-      $data['sc'][$i] = $this->M_teknisi->get_sc($data['odp'][$i]);
-      if ($data['sc'][$i]) {
+      $temp['odp'][$i] = $this->M_teknisi->get_odp_nearest($odc[$i]['LATITUDE'],$odc[$i]['LONGITUDE']);
+      $temp['sc'][$i] = $this->M_teknisi->get_sc_pi($temp['odp'][$i]);
+      if ($temp['sc'][$i]) {
         $status=true;
         $nearest=[
           'LATITUDE'=>$odc[$i]['LATITUDE'],
@@ -310,10 +311,51 @@ class Teknisi extends CI_Controller{
     }
     echo json_encode($nearest);
   }
+  public function ajax_get_nearest_teknisi(){
+    $data = $this->M_teknisi->get_odc(null,null);
+    $odc=array();
+    $temp = array();
+    $lat1=$this->input->post('lat');
+    $lng1=$this->input->post('lng');
+    foreach ($data as $key) {
+      $row=array();
+      $lat2=$key->LATITUDE;
+      $lng2=$key->LONGITUDE;
+
+      $row['DISTANCE']=$this->M_teknisi->distance($lat1,$lng1,$lat2,$lng2);
+      $row['STO']=$key->STO;
+      $row['NAME']=$key->NAME;
+      $row['LATITUDE']=$key->LATITUDE;
+      $row['LONGITUDE']=$key->LONGITUDE;
+      $row['ALAMAT']=$key->ALAMAT;
+
+      array_push($odc,$row);
+    }
+    sort($odc);
+    $status=false;
+    $i=1;
+    while($status==false){
+      $temp['odp'][$i] = $this->M_teknisi->get_odp_nearest($odc[$i]['LATITUDE'],$odc[$i]['LONGITUDE']);
+      $temp['sc'][$i] = $this->M_teknisi->get_sc_pi($temp['odp'][$i]);
+      if (sizeof($temp['sc'][$i])==0) {
+        $temp['teknisi'][$i] = $this->M_teknisi->get_teknisi_by_cluster($odc[$i]['STO'],$odc[$i]['NAME']);
+        if ($temp['teknisi'][$i]) {
+          $status=true;
+          $teknisi=array();
+          array_push($teknisi,$temp['teknisi'][$i]);
+        }
+      }
+      $i++;
+    }
+    echo json_encode($teknisi);
+  }
   public function ajax_do_sc(){
     echo json_encode($this->M_teknisi->do_sc());
   }
   public function ajax_assign_teknisi(){
     echo json_encode($this->M_teknisi->assign_teknisi());
+  }
+  public function ajax_upload_jadwal(){
+    echo json_encode($this->M_teknisi->upload_jadwal_csv());
   }
 }

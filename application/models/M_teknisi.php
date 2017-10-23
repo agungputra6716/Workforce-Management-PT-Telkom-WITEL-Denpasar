@@ -54,6 +54,24 @@ class M_teknisi extends CI_Model{
     }
     return $sc;
   }
+  public function get_sc_pi($pd_name){
+    if ($pd_name) {
+      $sc = array();
+      for ($i=0; $i <sizeof($pd_name) ; $i++) {
+        $this->db->where('ALPRO',$pd_name[$i]->PD_NAME);
+        $this->db->where('STATUS_RESUME','PI Ready');
+        $query = $this->db->get('sc');
+        foreach ($query->result() as $result) {
+          array_push($sc,$result);
+        }
+      }
+    }
+    else {
+      $query = $this->db->get('sc');
+      $sc=$query->result();
+    }
+    return $sc;
+  }
   public function get_sc_by_no($no_sc){
     $this->db->where('NO_SC', $no_sc);
     $query = $this->db->get('sc');
@@ -93,11 +111,19 @@ class M_teknisi extends CI_Model{
     $query = $this->db->get('user');
     return $query->result();
   }
+  public function get_teknisi_by_cluster($STO,$CLUSTER){
+    $this->db->where('STO', $STO);
+    $this->db->where('CLUSTER', $CLUSTER);
+    $this->db->where('STATUS', 'IDLE');
+    $this->db->where('TGL_KERJA', date('d/m/Y'));
+    $query = $this->db->get('jadwal');
+    return $query->result();
+  }
   public function get_avail_teknisi(){
     $this->db->where('STO', $this->input->post('STO'));
     $this->db->where('CLUSTER', $this->input->post('CLUSTER'));
     $this->db->where('STATUS', 'IDLE');
-    $this->db->where('TGL_KERJA', date('d-m-Y'));
+    $this->db->where('TGL_KERJA', date('d/m/Y'));
     $query = $this->db->get('jadwal');
     return $query->result();
   }
@@ -232,6 +258,10 @@ class M_teknisi extends CI_Model{
     else if($this->input->post('type')=='PROGRESS'){
       $this->db->where('STATUS_RESUME','PI Progress');
     }
+    if($this->input->post('type')=='SUMMARY'){
+      $this->column_order = array(null,'STO','PI Ready','PI Progress','PI ACCOM','PI Kendala'); //set column field database for datatable orderable
+      $this->column_search = array('STO','PI Ready','PI Progress','PI ACCOM','PI Kendala'); //set column field database for datatable searchable
+    }
 
     $this->db->from($this->table);
 
@@ -306,10 +336,10 @@ class M_teknisi extends CI_Model{
   }
   public function do_sc(){
     $data=array(
-      'STATUS'=>'BUSY'
+      'STATUS'=>'IDLE'
     );
     $this->db->where('USERNAME', $this->session->userdata('username'));
-    $this->db->where('TGL_KERJA', date('d-m-Y'));
+    $this->db->where('TGL_KERJA', date('d/m/Y'));
     $this->db->update('jadwal',$data);
 
     $data=array(
@@ -345,8 +375,55 @@ class M_teknisi extends CI_Model{
       'STATUS'=>'BUSY'
     );
     $this->db->where('USERNAME', $this->input->post('select_teknisi'));
-    $this->db->where('TGL_KERJA', date('d-m-Y'));
+    $this->db->where('TGL_KERJA', date('d/m/Y'));
     $this->db->update('jadwal',$data);
     return true;
+  }
+  function upload_jadwal_csv() {
+      $fp = fopen($_FILES['file_jadwal']['tmp_name'],'r');
+      if($fp){
+        while($csv_line = fgetcsv($fp,20000,",")){
+          for ($i = 0, $j = count($csv_line); $i < $j; $i++)
+          {
+              $insert_csv = array();
+              $insert_csv['STO'] = $csv_line[0];
+              $insert_csv['CLUSTER'] = $csv_line[1];
+              $insert_csv['USERNAME'] = $csv_line[2];
+              $insert_csv['NAME'] = $csv_line[3];
+              $insert_csv['TGL_KERJA'] = $csv_line[4];
+              $insert_csv['STATUS'] = $csv_line[5];
+          }
+          $data = array(
+            'STO' => $insert_csv['STO'],
+            'CLUSTER' => $insert_csv['CLUSTER'],
+            'USERNAME' => $insert_csv['USERNAME'],
+            'NAME' => $insert_csv['NAME'],
+            'TGL_KERJA' => $insert_csv['TGL_KERJA'],
+            'STATUS' => $insert_csv['STATUS']
+          );
+          $data['crane_features']=$this->db->insert('jadwal', $data);
+          if($data['crane_features'])
+          {
+            $data['success']="success";
+          }
+          else
+          {
+            $data['success']="error";
+          }
+        }
+        fclose($fp) or die("can't close file");
+        if($data['success'] == "success")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+      }
+      else
+      {
+          return false;
+      }
   }
 }

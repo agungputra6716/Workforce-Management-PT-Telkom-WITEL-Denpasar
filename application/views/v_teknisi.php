@@ -213,6 +213,7 @@
       </div>
     </li>
     <li><a href="#" id='show_teknisi_table' class="waves-effect"><i class="fa fa-calendar" id="token_show_teknisi_table"></i>Show Teknisi Today</a></li>
+    <li><a href="#" id='upload_jadwal' class="waves-effect"><i class="fa fa-cloud-upload" id="token_upload_jadwal"></i>Upload Jadwal Teknisi</a></li>
     <li><a href="#" id='summary' class="waves-effect"><i class="fa fa-book" id="token_summary"></i>Summary</a></li>
     <li><a href="#" id='inbox' class="waves-effect"><i class="fa fa-envelope-o" id="token_summary"></i>Job Inbox</a></li>
   </ul>
@@ -512,6 +513,38 @@
   </div>
 </div>
 
+<div class="modal fade" style="height:700px;"id="modal_upload_jadwal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">Upload CSV Jadwal Teknisi</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body table-responsive tabl-">
+        <form class="" id="form_upload_jadwal" action="" method="post">
+          <div class="file-field">
+              <div class="btn btn-primary btn-sm">
+                  <span>Choose file</span>
+                  <input type="file" name="file_jadwal" id="file_jadwal">
+              </div>
+              <div class="file-path-wrapper">
+                 <input class="file-path validate" type="text" placeholder="Upload your file">
+              </div>
+          </div>
+          <button type="submit" class="btn btn-md btn-success" id="btn_submit_jadwal">Upload</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer id='footer' class="page-footer center-on-small-only fluid-bottom danger-color-dark">
 
 
@@ -531,6 +564,7 @@
 <script type="text/javascript" src="<?php echo base_url('assets/js/compiled.min.js') ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.dataTables.min.js') ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('assets/js/dataTables.bootstrap.min.js') ?>"></script>
+<script type="text/javascript" src="<?php echo base_url('assets/js/ajaxfileupload.js') ?>"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb4ThyMb8dBaJ6-g_NN9GMFk1sxupL-Uw&callback=myMap" async defer ></script>
 
 <script type="text/javascript">
@@ -553,10 +587,11 @@
 
   $(document).ready(function(){
     $('.datepicker').pickadate({
-      format:'dd-mm-yyyy',
-      formatSubmit: 'dd-mm-yyyy'
+      format:'dd/mm/yyyy',
+      formatSubmit: 'dd/mm/yyyy'
     });
     if ('<?php echo $this->session->userdata('role') ?>'=='TEKNISI') {
+      $('#upload_jadwal').remove();
       $('#show_location').remove();
       $('#btn_manage_user').remove();
       $('#search_cluster').remove();
@@ -660,6 +695,7 @@
   });
   $('#btn_submit_search_cluster').click(function(e) {
     e.preventDefault();
+    toastr.info('Pencarian cluster sedang berlangsung, harap tunggu.');
     var sto=$('#select_sto').val();
     var odc=$('#select_odc').val();
     if (toogle_show_location==1){
@@ -702,11 +738,11 @@
       data: $('#form_do_sc').serialize(),
       success:function(data){
         $('#modal_do_sc').modal('hide');
+        toastr.success('Data PI berhasil diupdate!');
         if (toogle_show_location==1) {
           setMapOnAll(null);
         }
         get_odc(current);
-        toastr.success('Data SC berhasil diupdate!');
       },
       error:function(){
         alert('error do sc');
@@ -739,7 +775,7 @@
             $('#modal_assign_teknisi').modal('hide');
             get_odp(parseFloat(current.LATITUDE),parseFloat(current.LONGITUDE));
             create_circle(current);
-            alert('berhasil');
+            toastr.success('Berhasil melakukan assign teknisi');
           },
           error:function(){
 
@@ -763,6 +799,37 @@
   $('#summary').click(function(e){
     e.preventDefault();
     show_summary();
+  });
+  $('#upload_jadwal').click(function(e){
+    e.preventDefault();
+    $('#modal_upload_jadwal').modal('show');
+  });
+  $('#form_upload_jadwal').submit(function(e){
+    e.preventDefault();
+    toastr.info('Proses sedang berjalan');
+    $('#btn_submit_jadwal').text('Uploading...');
+    $('#btn_submit_jadwal').attr('disabled',true);
+    var data = new FormData();
+    data.append('file_jadwal',$('#file_jadwal')[0].files[0]);
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_upload_jadwal') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success:function(){
+        toastr.success('Upload jadwal berhasil dilakukan!');
+        $('#btn_submit_jadwal').text('Upload');
+        $('#btn_submit_jadwal').attr('disabled',false);
+      },
+      error:function(){
+        toastr.error('Upload jadwal gagal dilakukan! Silakan periksa format upload Jadwal!');
+        $('#btn_submit_jadwal').text('Upload');
+        $('#btn_submit_jadwal').attr('disabled',false);
+      }
+    });
   });
 
   function myMap() {
@@ -1146,6 +1213,9 @@
          "processing": true, //Feature control the processing indicator.
          "serverSide": true, //Feature control DataTables' server-side processing mode.
          "bDestroy": true,
+         "bFilter": false,
+         "bSort": false,
+         "bPaginate": false,
          "order": [], //Initial no order.
 
          // Load data for the table's content from an Ajax source
@@ -1259,7 +1329,7 @@
         $('#NO_SC').val(data[0].NO_SC);
         $('#header_do_sc').html('Kerjakan SC no '+data[0].NO_SC);
         $('#modal_table').modal('hide');
-        $('#modal_do_sc').modal('show');
+        $('#modal_do_sc').modal('show');        
       },
       error:function(){
         alert('error do sc');
@@ -1285,10 +1355,32 @@
             CLUSTER: current.NAME
           },
           success:function(data){
-            for (var i = 0; i < data.length; i++) {
-              $('#select_teknisi').append("<option class='option_teknisi' value='"+data[i].USERNAME+"'>"+data[i].NAME+"</option>");
+            if (data.length==0) {
+              toastr.info('Tidak ada teknisi yang iddle di cluster ini.');
+              toastr.info('Pencarian teknisi terdekat sedang berlangsung, harap tunggu.');
+              $.ajax({
+                url: '<?php echo base_url('Teknisi/ajax_get_nearest_teknisi') ?>',
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                  lat: current.LATITUDE,
+                  lng: current.LONGITUDE
+                },
+                success:function(data){
+                  console.log(data);
+                  for (var i = 0; i < data[0].length; i++) {
+                    $('#select_teknisi').append("<option class='option_teknisi' value='"+data[0][i].USERNAME+"'>"+data[0][i].NAME+"</option>");
+                    $('#select_teknisi').material_select();
+                  }
+                }
+              });
             }
-            $('#select_teknisi').material_select();
+            else {
+              for (var i = 0; i < data.length; i++) {
+                $('#select_teknisi').append("<option class='option_teknisi' value='"+data[i].USERNAME+"'>"+data[i].NAME+"</option>");
+                $('#select_teknisi').material_select();
+              }
+            }
             $('#modal_table').modal('hide');
             $('#modal_assign_teknisi').modal('show');
           },
@@ -1298,7 +1390,7 @@
         });
       },
       error:function(){
-        alert('error do sc');
+        alert('error assign teknisi');
       }
     });
   }
