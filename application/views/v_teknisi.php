@@ -213,7 +213,9 @@
       </div>
     </li>
     <li><a href="#" id='show_teknisi_table' class="waves-effect"><i class="fa fa-calendar" id="token_show_teknisi_table"></i>Show Teknisi Today</a></li>
-    <li><a href="#" id='upload_jadwal' class="waves-effect"><i class="fa fa-cloud-upload" id="token_upload_jadwal"></i>Upload Jadwal Teknisi</a></li>
+    <li><a href="#" id='upload_jadwal' class="waves-effect"><i class="fa fa-calendar-plus-o" id="token_upload_jadwal"></i>Upload Jadwal Teknisi</a></li>
+    <li><a href="#" id='update_pi' class="waves-effect"><i class="fa fa-file-excel-o" id="token_update_pi"></i>Update data PI</a></li>
+    <li><a href="#" id='tambah_pi' class="waves-effect"><i class="fa fa-plus" id="token_tambah_pi"></i>Tambah data PI</a></li>
     <li><a href="#" id='summary' class="waves-effect"><i class="fa fa-book" id="token_summary"></i>Summary</a></li>
     <li><a href="#" id='inbox' class="waves-effect"><i class="fa fa-envelope-o" id="token_summary"></i>Job Inbox</a></li>
   </ul>
@@ -545,6 +547,70 @@
   </div>
 </div>
 
+<div class="modal fade" style="height:700px;"id="modal_update_pi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">Update PI</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body table-responsive tabl-">
+        <form class="" id="form_update_pi" action="" method="post">
+          <div class="file-field">
+              <div class="btn btn-primary btn-sm">
+                  <span>Choose file</span>
+                  <input type="file" name="file_update_pi" id="file_update_pi">
+              </div>
+              <div class="file-path-wrapper">
+                 <input class="file-path validate" type="text" placeholder="Upload your file">
+              </div>
+          </div>
+          <button type="submit" class="btn btn-md btn-success" id="btn_submit_update_pi">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" style="height:700px;"id="modal_tambah_pi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">Tambah PI</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body table-responsive tabl-">
+        <form class="" id="form_tambah_pi" action="" method="post">
+          <div class="file-field">
+              <div class="btn btn-primary btn-sm">
+                  <span>Choose file</span>
+                  <input type="file" name="file_tambah_pi" id="file_tambah_pi">
+              </div>
+              <div class="file-path-wrapper">
+                 <input class="file-path validate" type="text" placeholder="Upload your file">
+              </div>
+          </div>
+          <button type="submit" class="btn btn-md btn-success" id="btn_submit_tambah_pi">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer id='footer' class="page-footer center-on-small-only fluid-bottom danger-color-dark">
 
 
@@ -601,10 +667,12 @@
       $('#show_pi_by_sto').remove();
       $('#show_pi_by_status').remove();
       $('#show_teknisi_table').remove();
+      $('#update_pi').remove();
+      $('#tambah_pi').remove();
+      $('#action').remove();
     }
     else if('<?php echo $this->session->userdata('role') ?>'=='ADMIN'){
       $('#show_my_cluster').remove();
-      $('#action').remove();
       $('#inbox').remove();
     }
     else if('<?php echo $this->session->userdata('role') ?>'=='HELP DESK'){
@@ -804,6 +872,14 @@
     e.preventDefault();
     $('#modal_upload_jadwal').modal('show');
   });
+  $('#update_pi').click(function(e) {
+    e.preventDefault();
+    $('#modal_update_pi').modal('show');
+  });
+  $('#tambah_pi').click(function(e) {
+    e.preventDefault();
+    $('#modal_tambah_pi').modal('show');
+  });
   $('#form_upload_jadwal').submit(function(e){
     e.preventDefault();
     toastr.info('Proses sedang berjalan');
@@ -828,6 +904,60 @@
         toastr.error('Upload jadwal gagal dilakukan! Silakan periksa format upload Jadwal!');
         $('#btn_submit_jadwal').text('Upload');
         $('#btn_submit_jadwal').attr('disabled',false);
+      }
+    });
+  });
+  $('#form_update_pi').submit(function(e){
+    e.preventDefault();
+    toastr.info('Proses sedang berjalan');
+    $('#btn_submit_update_pi').text('Updating...');
+    $('#btn_submit_update_pi').attr('disabled',true);
+    var data = new FormData();
+    data.append('file_update_pi',$('#file_update_pi')[0].files[0]);
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_update_pi') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success:function(){
+        toastr.success('Update PI berhasil dilakukan!');
+        $('#btn_submit_update_pi').text('Update');
+        $('#btn_submit_update_pi').attr('disabled',false);
+      },
+      error:function(){
+        toastr.error('Update PI gagal dilakukan! Silakan periksa format update PI!');
+        $('#btn_submit_update_pi').text('Update');
+        $('#btn_submit_update_pi').attr('disabled',false);
+      }
+    });
+  });
+  $('#form_tambah_pi').submit(function(e){
+    e.preventDefault();
+    toastr.info('Proses sedang berjalan');
+    $('#btn_submit_tambah_pi').text('Uploading...');
+    $('#btn_submit_tambah_pi').attr('disabled',true);
+    var data = new FormData();
+    data.append('file_tambah_pi',$('#file_tambah_pi')[0].files[0]);
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_tambah_pi') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success:function(){
+        toastr.success('Tambah PI berhasil dilakukan!');
+        $('#btn_submit_tambah_pi').text('Add');
+        $('#btn_submit_tambah_pi').attr('disabled',false);
+      },
+      error:function(){
+        toastr.error('Tambah PI gagal dilakukan! Silakan periksa format tambah PI!');
+        $('#btn_submit_tambah_pi').text('Add');
+        $('#btn_submit_tambah_pi').attr('disabled',false);
       }
     });
   });
@@ -926,9 +1056,15 @@
         pd_name:pd_name
       },
       success:function(data){
+        num_ready=0;
+        num_progress=0;
+        num_accom=0;
+        num_kendala=0;
         for (var i = 0; i < data.length; i++) {
           if (data[i].STATUS_RESUME=='PI Ready') num_ready++;
-          else num_accom++;
+          else if (data[i].STATUS_RESUME=='PI Progress') num_progress++;
+          else if (data[i].STATUS_RESUME=='PI ACCOM') num_accom++;
+          else if (data[i].STATUS_RESUME=='PI Kedala') num_kendala++;
         }
         array_sc.push(data);
         is_finished=true;
@@ -1116,8 +1252,7 @@
     });
   }
   function show_data_table_sc(type){
-    if (type=='all') $('#action').hide();
-    else $('#action').show();
+    $('#action').show();
     $('#modal_table').modal('show');
     table = null;
     table = $('#sc_table').DataTable({
@@ -1149,7 +1284,12 @@
     //  $('#sc_table_filter').remove();
   }
   function show_data_table_pi(type,sto){
-    $('#action').hide();
+    if ((type=='READY')||(type=='ACCOM')||(type=='KENDALA')) {
+      $('#action').hide();
+    }
+    else {
+      $('#action').show();
+    }
     $('#modal_table').modal('show');
     table = null;
     table = $('#sc_table').DataTable({
@@ -1329,7 +1469,7 @@
         $('#NO_SC').val(data[0].NO_SC);
         $('#header_do_sc').html('Kerjakan SC no '+data[0].NO_SC);
         $('#modal_table').modal('hide');
-        $('#modal_do_sc').modal('show');        
+        $('#modal_do_sc').modal('show');
       },
       error:function(){
         alert('error do sc');
@@ -1393,6 +1533,29 @@
         alert('error assign teknisi');
       }
     });
+  }
+  function calcel_assign_teknisi(no_sc){
+    if(confirm('Yakin ingin cancel?')){
+      $.ajax({
+        url: '<?php echo base_url('Teknisi/ajax_cancel_assign_teknisi') ?>',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {no_sc: no_sc},
+        success:function(){
+          $('#modal_table').modal('hide');
+          if (toogle_show_location==1) {
+            setMapOnAll(null);
+          }
+          is_finished=false;
+          get_odp(parseFloat(current.LATITUDE),parseFloat(current.LONGITUDE));
+          create_circle(current);
+          toastr.success('Berhasil melakukan cancel assign teknisi');
+        },
+        error:function() {
+          alert('error cancel assign teknisi');
+        }
+      });
+    }
   }
   </script>
 </body>

@@ -30,7 +30,7 @@ class M_teknisi extends CI_Model{
       foreach ($query->result() as $row) {
         $lat1=$row->LATITUDE;
         $lon1=$row->LONGITUDE;
-        if ($this->distance($lat1,$lon1,$lat2,$lon2)<=0.5) {
+        if (($this->distance($lat1,$lon1,$lat2,$lon2))<=0.5) {
           array_push($odp,$row);
         }
       }
@@ -362,20 +362,28 @@ class M_teknisi extends CI_Model{
     );
     $this->db->where('NO_SC', $this->input->post('NO_SC_SC'));
     $this->db->update('sc',$data);
-    //
-    // $data=array(
-    //   'USERNAME'=>$this->input->post('select_teknisi'),
-    //   'NAME'=>$this->input->post('NAME_TEKNISI'),
-    //   'NO_SC'=> $this->input->post('NO_SC_SC'),
-    //   'STATUS'=> 'ON PROGRESS',
-    // );
-    // $this->db->insert('job', $data);
-
     $data=array(
-      'STATUS'=>'BUSY'
+      'STATUS'=> 'BUSY',
+      'NO_SC'=> $this->input->post('no_sc')
     );
     $this->db->where('USERNAME', $this->input->post('select_teknisi'));
     $this->db->where('TGL_KERJA', date('d/m/Y'));
+    $this->db->update('jadwal',$data);
+    return true;
+  }
+  public function cancel_assign_teknisi(){
+    $data=array(
+      'STATUS_RESUME'=>'PI Ready',
+      'TEKNISI'=>'',
+      'HP_TEKNISI'=>''
+    );
+    $this->db->where('NO_SC', $this->input->post('no_sc'));
+    $this->db->update('sc',$data);
+    $data=array(
+      'STATUS'=>'IDLE',
+      'NO_SC'=>''
+    );    
+    $this->db->where('NO_SC', $this->input->post('no_sc'));
     $this->db->update('jadwal',$data);
     return true;
   }
@@ -402,6 +410,148 @@ class M_teknisi extends CI_Model{
             'STATUS' => $insert_csv['STATUS']
           );
           $data['crane_features']=$this->db->insert('jadwal', $data);
+          if($data['crane_features'])
+          {
+            $data['success']="success";
+          }
+          else
+          {
+            $data['success']="error";
+          }
+        }
+        fclose($fp) or die("can't close file");
+        if($data['success'] == "success")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+      }
+      else
+      {
+          return false;
+      }
+  }
+  function update_pi_csv() {
+    $fp = fopen($_FILES['file_update_pi']['tmp_name'],'r');
+    if($fp){
+      while($csv_line = fgetcsv($fp,20000,",")){
+        for ($i = 0, $j = count($csv_line); $i < $j; $i++)
+        {
+            $insert_csv = array();
+            $insert_csv['STO'] = $csv_line[0];
+            $insert_csv['NO_SC'] = $csv_line[1];
+            $insert_csv['TYPE_TRANSAKSI'] = $csv_line[2];
+            $insert_csv['ALPRO'] = $csv_line[3];
+            $insert_csv['POTS'] = $csv_line[4];
+            $insert_csv['SPEEDY'] = $csv_line[5];
+            $insert_csv['STATUS_RESUME'] = $csv_line[6];
+            $insert_csv['ORDER_DATE'] = $csv_line[7];
+            $insert_csv['NAMA_CUST'] = $csv_line[8];
+            $insert_csv['ALAMAT'] = $csv_line[9];
+            $insert_csv['LONGITUDE'] = $csv_line[10];
+            $insert_csv['LATITUDE'] = $csv_line[11];
+            $insert_csv['TGL_INSTALL'] = $csv_line[12];
+            $insert_csv['TEKNISI'] = $csv_line[13];
+            $insert_csv['HP_TEKNISI'] = $csv_line[14];
+            $insert_csv['TINDAK_LANJUT'] = $csv_line[15];
+            $insert_csv['SN_ONT'] = $csv_line[16];
+        }
+        $this->db->where('NO_SC', $insert_csv['NO_SC']);
+        $x = $this->db->get('sc');
+        if($x->num_rows() > 0){
+          $data = array(
+            'STO' => $insert_csv['STO'],
+            'NO_SC' => $insert_csv['NO_SC'],
+            'TYPE_TRANSAKSI' => $insert_csv['TYPE_TRANSAKSI'],
+            'ALPRO' => $insert_csv['ALPRO'],
+            'POTS' => $insert_csv['POTS'],
+            'SPEEDY' => $insert_csv['SPEEDY'],
+            'STATUS_RESUME' => $insert_csv['STATUS_RESUME'],
+            'ORDER_DATE' => $insert_csv['ORDER_DATE'],
+            'NAMA_CUST' => $insert_csv['NAMA_CUST'],
+            'ALAMAT' => $insert_csv['ALAMAT'],
+            'LONGITUDE' => $insert_csv['LONGITUDE'],
+            'LATITUDE' => $insert_csv['LATITUDE'],
+            'TGL_INSTALL' => $insert_csv['TGL_INSTALL'],
+            'TEKNISI' => $insert_csv['TEKNISI'],
+            'HP_TEKNISI' => $insert_csv['HP_TEKNISI'],
+            'TINDAK_LANJUT' => $insert_csv['TINDAK_LANJUT'],
+            'SN_ONT' => $insert_csv['SN_ONT']
+          );
+          $data['crane_features']=$this->db->update('sc', $data);
+          if($data['crane_features'])
+          {
+            $data['success']="success";
+          }
+          else
+          {
+            $data['success']="error";
+          }
+        }
+      }
+      fclose($fp) or die("can't close file");
+      if($data['success'] == "success")
+      {
+          return true;
+      }
+      else
+      {
+          return false;
+      }
+    }
+    else
+    {
+        return false;
+    }
+  }
+  function tambah_pi_csv() {
+      $fp = fopen($_FILES['file_tambah_pi']['tmp_name'],'r');
+      if($fp){
+        while($csv_line = fgetcsv($fp,20000,",")){
+          for ($i = 0, $j = count($csv_line); $i < $j; $i++)
+          {
+            $insert_csv = array();
+            $insert_csv['STO'] = $csv_line[0];
+            $insert_csv['NO_SC'] = $csv_line[1];
+            $insert_csv['TYPE_TRANSAKSI'] = $csv_line[2];
+            $insert_csv['ALPRO'] = $csv_line[3];
+            $insert_csv['POTS'] = $csv_line[4];
+            $insert_csv['SPEEDY'] = $csv_line[5];
+            $insert_csv['STATUS_RESUME'] = $csv_line[6];
+            $insert_csv['ORDER_DATE'] = $csv_line[7];
+            $insert_csv['NAMA_CUST'] = $csv_line[8];
+            $insert_csv['ALAMAT'] = $csv_line[9];
+            $insert_csv['LONGITUDE'] = $csv_line[10];
+            $insert_csv['LATITUDE'] = $csv_line[11];
+            $insert_csv['TGL_INSTALL'] = $csv_line[12];
+            $insert_csv['TEKNISI'] = $csv_line[13];
+            $insert_csv['HP_TEKNISI'] = $csv_line[14];
+            $insert_csv['TINDAK_LANJUT'] = $csv_line[15];
+            $insert_csv['SN_ONT'] = $csv_line[16];
+          }
+          $data = array(
+            'STO' => $insert_csv['STO'],
+            'NO_SC' => $insert_csv['NO_SC'],
+            'TYPE_TRANSAKSI' => $insert_csv['TYPE_TRANSAKSI'],
+            'ALPRO' => $insert_csv['ALPRO'],
+            'POTS' => $insert_csv['POTS'],
+            'SPEEDY' => $insert_csv['SPEEDY'],
+            'STATUS_RESUME' => $insert_csv['STATUS_RESUME'],
+            'ORDER_DATE' => $insert_csv['ORDER_DATE'],
+            'NAMA_CUST' => $insert_csv['NAMA_CUST'],
+            'ALAMAT' => $insert_csv['ALAMAT'],
+            'LONGITUDE' => $insert_csv['LONGITUDE'],
+            'LATITUDE' => $insert_csv['LATITUDE'],
+            'TGL_INSTALL' => $insert_csv['TGL_INSTALL'],
+            'TEKNISI' => $insert_csv['TEKNISI'],
+            'HP_TEKNISI' => $insert_csv['HP_TEKNISI'],
+            'TINDAK_LANJUT' => $insert_csv['TINDAK_LANJUT'],
+            'SN_ONT' => $insert_csv['SN_ONT']
+          );
+          $data['crane_features']=$this->db->insert('sc', $data);
           if($data['crane_features'])
           {
             $data['success']="success";

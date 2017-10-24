@@ -21,7 +21,12 @@ class Teknisi extends CI_Controller{
   }
   public function ajax_get_odp(){
     $data['odp'] = $this->M_teknisi->get_odp();
-    $data['sc'] = $this->M_teknisi->get_sc($data['odp']);
+    if (sizeof($data['odp'])>0) {
+      $data['sc'] = $this->M_teknisi->get_sc($data['odp']);
+    }
+    else {
+      $data['sc'] = [];
+    }
     echo json_encode($data);
   }
   public function ajax_get_sc(){
@@ -65,11 +70,16 @@ class Teknisi extends CI_Controller{
       $row[] = $key->HP_TEKNISI;
       $row[] = $key->TINDAK_LANJUT;
       $row[] = $key->SN_ONT;
-      if ($key->STATUS_RESUME=='PI Ready') {
-        $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Assign" onclick="assign_teknisi('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i> Assign Teknisi</a>';
-      }
-      else {
-        $row[] = '';
+      if ($this->session->userdata('role')!='TEKNISI') {
+        if ($key->STATUS_RESUME=='PI Ready') {
+          $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Assign" onclick="assign_teknisi('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i> Assign Teknisi</a>';
+        }
+        else if ($key->STATUS_RESUME=='PI Progress') {
+          $row[] = '<a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Cancel" onclick="calcel_assign_teknisi('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i>Cancel</a>';
+        }
+        else {
+          $row[] = '';
+        }
       }
 
       $data[] = $row;
@@ -109,7 +119,14 @@ class Teknisi extends CI_Controller{
       $row[] = $key->HP_TEKNISI;
       $row[] = $key->TINDAK_LANJUT;
       $row[] = $key->SN_ONT;
-      $row[] = '';
+      if ($this->session->userdata('role')!='TEKNISI') {
+        if ($key->STATUS_RESUME=='PI Progress') {
+          $row[] = '<a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Cancel" onclick="calcel_assign_teknisi('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i>Cancel</a>';
+        }
+        else {
+          $row[] = '';
+        }
+      }
 
 
       $data[] = $row;
@@ -357,5 +374,14 @@ class Teknisi extends CI_Controller{
   }
   public function ajax_upload_jadwal(){
     echo json_encode($this->M_teknisi->upload_jadwal_csv());
+  }
+  public function ajax_tambah_pi(){
+    echo json_encode($this->M_teknisi->tambah_pi_csv());
+  }
+  public function ajax_update_pi(){
+    echo json_encode($this->M_teknisi->update_pi_csv());
+  }
+  public function ajax_cancel_assign_teknisi(){
+    echo json_encode($this->M_teknisi->cancel_assign_teknisi());
   }
 }
