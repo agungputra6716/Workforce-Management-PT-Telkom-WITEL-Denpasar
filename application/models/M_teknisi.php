@@ -382,7 +382,7 @@ class M_teknisi extends CI_Model{
     $data=array(
       'STATUS'=>'IDLE',
       'NO_SC'=>''
-    );    
+    );
     $this->db->where('NO_SC', $this->input->post('no_sc'));
     $this->db->update('jadwal',$data);
     return true;
@@ -435,6 +435,7 @@ class M_teknisi extends CI_Model{
       }
   }
   function update_pi_csv() {
+    $num=0;
     $fp = fopen($_FILES['file_update_pi']['tmp_name'],'r');
     if($fp){
       while($csv_line = fgetcsv($fp,20000,",")){
@@ -461,7 +462,7 @@ class M_teknisi extends CI_Model{
         }
         $this->db->where('NO_SC', $insert_csv['NO_SC']);
         $x = $this->db->get('sc');
-        if($x->num_rows() > 0){
+        if($x->num_rows() == 0){
           $data = array(
             'STO' => $insert_csv['STO'],
             'NO_SC' => $insert_csv['NO_SC'],
@@ -481,26 +482,15 @@ class M_teknisi extends CI_Model{
             'TINDAK_LANJUT' => $insert_csv['TINDAK_LANJUT'],
             'SN_ONT' => $insert_csv['SN_ONT']
           );
-          $data['crane_features']=$this->db->update('sc', $data);
+          $data['crane_features']=$this->db->insert('sc', $data);
           if($data['crane_features'])
           {
-            $data['success']="success";
-          }
-          else
-          {
-            $data['success']="error";
+            $num++;
           }
         }
       }
       fclose($fp) or die("can't close file");
-      if($data['success'] == "success")
-      {
-          return true;
-      }
-      else
-      {
-          return false;
-      }
+      return $num;
     }
     else
     {
@@ -575,5 +565,88 @@ class M_teknisi extends CI_Model{
       {
           return false;
       }
+  }
+  function upload_cluster_csv() {
+    $num=0;
+    $fp = fopen($_FILES['file_cluster']['tmp_name'],'r');
+    if($fp){
+      while($csv_line = fgetcsv($fp,20000,",")){
+        for ($i = 0, $j = count($csv_line); $i < $j; $i++)
+        {
+          $insert_csv = array();
+          $insert_csv['STO'] = $csv_line[0];
+          $insert_csv['NAME'] = $csv_line[1];
+          $insert_csv['ALAMAT'] = $csv_line[2];
+          $insert_csv['LATITUDE'] = $csv_line[3];
+          $insert_csv['LONGITUDE'] = $csv_line[4];
+        }
+        $this->db->where('STO', $insert_csv['STO']);
+        $this->db->where('NAME', $insert_csv['NAME']);
+        $x = $this->db->get('alpro_odc');
+        if($x->num_rows() == 0){
+          $data = array(
+            'STO' => $insert_csv['STO'],
+            'NAME' => $insert_csv['NAME'],
+            'ALAMAT' => $insert_csv['ALAMAT'],
+            'LATITUDE' => $insert_csv['LATITUDE'],
+            'LONGITUDE' => $insert_csv['LONGITUDE']
+          );
+          $data['crane_features']=$this->db->insert('alpro_odc', $data);
+          if($data['crane_features'])
+          {
+            $num++;
+          }
+        }
+      }
+      fclose($fp) or die("can't close file");
+      return $num;
+    }
+    else
+    {
+        return false;
+    }
+  }
+  function upload_teknisi_csv() {
+    $num=0;
+    $fp = fopen($_FILES['file_teknisi']['tmp_name'],'r');
+    if($fp){
+      while($csv_line = fgetcsv($fp,20000,",")){
+        for ($i = 0, $j = count($csv_line); $i < $j; $i++)
+        {
+          $insert_csv = array();
+          $insert_csv['USERNAME'] = $csv_line[0];
+          $insert_csv['PASSWORD'] = md5($csv_line[1]);
+          $insert_csv['NAME'] = $csv_line[2];
+          $insert_csv['ROLE'] = 'TEKNISI';
+          $insert_csv['STO'] = $csv_line[3];
+          $insert_csv['CLUSTER'] = $csv_line[4];
+          $insert_csv['CONTACT'] = $csv_line[5];
+        }
+        $this->db->where('USERNAME', $insert_csv['USERNAME']);
+        $x = $this->db->get('user');
+        if($x->num_rows() == 0){
+          $data = array(
+            'USERNAME' => $insert_csv['USERNAME'],
+            'PASSWORD' => $insert_csv['PASSWORD'],
+            'NAME' => $insert_csv['NAME'],
+            'ROLE' => $insert_csv['ROLE'],
+            'STO' => $insert_csv['STO'],
+            'CLUSTER' => $insert_csv['CLUSTER'],
+            'CONTACT' => $insert_csv['CONTACT']
+          );
+          $data['crane_features']=$this->db->insert('user', $data);
+          if($data['crane_features'])
+          {
+            $num++;
+          }
+        }
+      }
+      fclose($fp) or die("can't close file");
+      return $num;
+    }
+    else
+    {
+        return false;
+    }
   }
 }

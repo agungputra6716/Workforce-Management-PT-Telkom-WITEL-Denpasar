@@ -270,10 +270,10 @@ class Teknisi extends CI_Controller{
       $row = array();
       $row[] = $no;
       $row[] = $temp[$i]['STO'];
-      $row[] = $temp[$i]['READY'];
-      $row[] = $temp[$i]['PROGRESS'];
-      $row[] = $temp[$i]['ACCOM'];
-      $row[] = $temp[$i]['KENDALA'];
+      $row[] = '<a onclick="show_data_table_pi("READY",'."'".$temp[$i]["STO"]."'".')">'.$temp[$i]['READY'].'</a>';
+      $row[] = '<a onclick="show_data_table_pi("PROGRESS",'."'".$temp[$i]["STO"]."'".')">'.$temp[$i]['PROGRESS'].'</a>';
+      $row[] = '<a onclick="show_data_table_pi("ACCOM",'."'".$temp[$i]["STO"]."'".')">'.$temp[$i]['ACCOM'].'</a>';
+      $row[] = '<a onclick="show_data_table_pi("KENDALA",'."'".$temp[$i]["STO"]."'".')">'.$temp[$i]['KENDALA'].'</a>';
 
       $data[] = $row;
     }
@@ -380,6 +380,12 @@ class Teknisi extends CI_Controller{
   }
   public function ajax_update_pi(){
     echo json_encode($this->M_teknisi->update_pi_csv());
+  }
+  public function ajax_upload_cluster(){
+    echo json_encode($this->M_teknisi->upload_cluster_csv());
+  }
+  public function ajax_upload_teknisi(){
+    echo json_encode($this->M_teknisi->upload_teknisi_csv());
   }
   public function ajax_cancel_assign_teknisi(){
     echo json_encode($this->M_teknisi->cancel_assign_teknisi());

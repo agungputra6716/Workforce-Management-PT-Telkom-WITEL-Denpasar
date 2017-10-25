@@ -213,11 +213,13 @@
       </div>
     </li>
     <li><a href="#" id='show_teknisi_table' class="waves-effect"><i class="fa fa-calendar" id="token_show_teknisi_table"></i>Show Teknisi Today</a></li>
+    <li><a href="#" id='upload_teknisi' class="waves-effect"><i class="fa fa-users" id="token_upload_jadwal"></i>Upload Teknisi</a></li>
     <li><a href="#" id='upload_jadwal' class="waves-effect"><i class="fa fa-calendar-plus-o" id="token_upload_jadwal"></i>Upload Jadwal Teknisi</a></li>
+    <li><a href="#" id='upload_cluster' class="waves-effect"><i class="fa fa-compass" id="token_upload_jadwal"></i>Upload Cluster</a></li>
     <li><a href="#" id='update_pi' class="waves-effect"><i class="fa fa-file-excel-o" id="token_update_pi"></i>Update data PI</a></li>
     <li><a href="#" id='tambah_pi' class="waves-effect"><i class="fa fa-plus" id="token_tambah_pi"></i>Tambah data PI</a></li>
     <li><a href="#" id='summary' class="waves-effect"><i class="fa fa-book" id="token_summary"></i>Summary</a></li>
-    <li><a href="#" id='inbox' class="waves-effect"><i class="fa fa-envelope-o" id="token_summary"></i>Job Inbox</a></li>
+    <li><a href="#" id='inbox' class="waves-effect"><i class="fa fa-envelope-o" id="token_inbox"></i>Job Inbox</a></li>
   </ul>
 </li>
 <!--/. Side navigation links -->
@@ -286,8 +288,16 @@
               <form id="form_do_sc" class="" action="" method="post">
                 <input type="hidden" id="NO_SC" name="NO_SC" value="">
                 <div class="md-form">
-                  <input required type="text" id="TANGGAL_INSTALL" name="TANGGAL_INSTALL" class="form-control datepicker validate">
-                  <label data-error="Silahkan isi tanggal install" for="date-picker">Tanggal Install</label>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <input required type="text" id="TANGGAL_INSTALL" name="TANGGAL_INSTALL" class="form-control datepicker validate">
+                      <label data-error="Silahkan isi tanggal install" for="date-picker">Tanggal Install</label>
+                    </div>
+                    <div class="col-lg-6">
+                      <input type="text" required id="DO_SN_ONT" name="SN_ONT" class="form-control validate" value="">
+                      <label data-error="Kolom SN ONT belum diisi" for="SN_ONT">SN ONT</label>
+                    </div>
+                  </div>
                 </div>
                 <div class="md-form">
                   <input type="text" id="DO_TEKNISI" name="TEKNISI" class="form-control validate" value="<?php echo $this->session->userdata('nama') ?>" readonly>
@@ -300,10 +310,6 @@
                 <div class="md-form">
                   <textarea type="text" required id="DO_TINDAK_LANJUT" name="TINDAK_LANJUT" class="form-control validate md-textarea" value=""></textarea>
                   <label data-error="Kolom Tindak Lanjut belum diisi" for="TINDAK_LANJUT">TINDAK LANJUT</label>
-                </div>
-                <div class="md-form">
-                  <input type="text" required id="DO_SN_ONT" name="SN_ONT" class="form-control validate" value="">
-                  <label data-error="Kolom SN ONT belum diisi" for="SN_ONT">SN ONT</label>
                 </div>
               </form>
             </div>
@@ -611,6 +617,70 @@
   </div>
 </div>
 
+<div class="modal fade" style="height:700px;"id="modal_upload_cluster" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">Upload Cluster</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body table-responsive tabl-">
+        <form class="" id="form_upload_cluster" action="" method="post">
+          <div class="file-field">
+              <div class="btn btn-primary btn-sm">
+                  <span>Choose file</span>
+                  <input type="file" name="file_cluster" id="file_cluster">
+              </div>
+              <div class="file-path-wrapper">
+                 <input class="file-path validate" type="text" placeholder="Upload your file">
+              </div>
+          </div>
+          <button type="submit" class="btn btn-md btn-success" id="btn_submit_upload_cluster">Upload</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" style="height:700px;"id="modal_upload_teknisi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">Upload Teknisi</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body table-responsive tabl-">
+        <form class="" id="form_upload_teknisi" action="" method="post">
+          <div class="file-field">
+              <div class="btn btn-primary btn-sm">
+                  <span>Choose file</span>
+                  <input type="file" name="file_teknisi" id="file_teknisi">
+              </div>
+              <div class="file-path-wrapper">
+                 <input class="file-path validate" type="text" placeholder="Upload your file">
+              </div>
+          </div>
+          <button type="submit" class="btn btn-md btn-success" id="btn_submit_upload_teknisi">Upload</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer id='footer' class="page-footer center-on-small-only fluid-bottom danger-color-dark">
 
 
@@ -652,6 +722,7 @@
   var username="<?php echo $this->session->userdata('username') ?>";
 
   $(document).ready(function(){
+    $('#tambah_pi').hide();
     $('.datepicker').pickadate({
       format:'dd/mm/yyyy',
       formatSubmit: 'dd/mm/yyyy'
@@ -669,7 +740,9 @@
       $('#show_teknisi_table').remove();
       $('#update_pi').remove();
       $('#tambah_pi').remove();
-      $('#action').remove();
+      $('#action').hide();
+      $('#upload_cluster').remove();
+      $('#upload_teknisi').remove();
     }
     else if('<?php echo $this->session->userdata('role') ?>'=='ADMIN'){
       $('#show_my_cluster').remove();
@@ -872,6 +945,14 @@
     e.preventDefault();
     $('#modal_upload_jadwal').modal('show');
   });
+  $('#upload_cluster').click(function(e){
+    e.preventDefault();
+    $('#modal_upload_cluster').modal('show');
+  });
+  $('#upload_teknisi').click(function(e){
+    e.preventDefault();
+    $('#modal_upload_teknisi').modal('show');
+  });
   $('#update_pi').click(function(e) {
     e.preventDefault();
     $('#modal_update_pi').modal('show');
@@ -922,8 +1003,8 @@
       cache: false,
       contentType: false,
       processData: false,
-      success:function(){
-        toastr.success('Update PI berhasil dilakukan!');
+      success:function(data){
+        toastr.success('Berhasil update PI sebanyak '+data+' buah!');
         $('#btn_submit_update_pi').text('Update');
         $('#btn_submit_update_pi').attr('disabled',false);
       },
@@ -953,6 +1034,60 @@
         toastr.success('Tambah PI berhasil dilakukan!');
         $('#btn_submit_tambah_pi').text('Add');
         $('#btn_submit_tambah_pi').attr('disabled',false);
+      },
+      error:function(){
+        toastr.error('Tambah PI gagal dilakukan! Silakan periksa format tambah PI!');
+        $('#btn_submit_tambah_pi').text('Add');
+        $('#btn_submit_tambah_pi').attr('disabled',false);
+      }
+    });
+  });
+  $('#form_upload_cluster').submit(function(e){
+    e.preventDefault();
+    toastr.info('Proses sedang berjalan');
+    $('#btn_submit_upload_cluster').text('Uploading...');
+    $('#btn_submit_upload_cluster').attr('disabled',true);
+    var data = new FormData();
+    data.append('file_cluster',$('#file_cluster')[0].files[0]);
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_upload_cluster') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success:function(data){
+        toastr.success('Berhasil menambah cluster sebanyak '+data+' buah!');
+        $('#btn_submit_upload_cluster').text('Upload');
+        $('#btn_submit_upload_cluster').attr('disabled',false);
+      },
+      error:function(){
+        toastr.error('Tambah PI gagal dilakukan! Silakan periksa format tambah PI!');
+        $('#btn_submit_tambah_pi').text('Add');
+        $('#btn_submit_tambah_pi').attr('disabled',false);
+      }
+    });
+  });
+  $('#form_upload_teknisi').submit(function(e){
+    e.preventDefault();
+    toastr.info('Proses sedang berjalan');
+    $('#btn_submit_upload_teknisi').text('Uploading...');
+    $('#btn_submit_upload_teknisi').attr('disabled',true);
+    var data = new FormData();
+    data.append('file_teknisi',$('#file_teknisi')[0].files[0]);
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_upload_teknisi') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success:function(data){
+        toastr.success('Berhasil menambah teknisi sebanyak '+data+' orang!');
+        $('#btn_submit_upload_teknisi').text('Upload');
+        $('#btn_submit_upload_teknisi').attr('disabled',false);
       },
       error:function(){
         toastr.error('Tambah PI gagal dilakukan! Silakan periksa format tambah PI!');
@@ -1319,6 +1454,7 @@
     //  $('#sc_table_filter').remove();
   }
   function show_inbox(){
+    $('#action').show();
     $('#modal_table').modal('show');
     table = null;
     table = $('#sc_table').DataTable({
