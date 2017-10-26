@@ -72,13 +72,15 @@ class Teknisi extends CI_Controller{
       $row[] = $key->SN_ONT;
       if ($this->session->userdata('role')!='TEKNISI') {
         if ($key->STATUS_RESUME=='PI Ready') {
-          $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Assign" onclick="assign_teknisi('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i> Assign Teknisi</a>';
+          $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Assign" onclick="assign_teknisi('."'".$key->NO_SC."'".')">Assign Teknisi</a>
+                  <a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_pi('."'".$key->NO_SC."'".')">Edit PI</a>';
         }
         else if ($key->STATUS_RESUME=='PI Progress') {
-          $row[] = '<a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Cancel" onclick="calcel_assign_teknisi('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i>Cancel</a>';
+          $row[] = '<a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Cancel" onclick="calcel_assign_teknisi('."'".$key->NO_SC."'".')">Cancel</a>
+          <a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_pi('."'".$key->NO_SC."'".')">Edit PI</a>';
         }
         else {
-          $row[] = '';
+          $row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_pi('."'".$key->NO_SC."'".')">Edit PI</a>';
         }
       }
 
@@ -120,11 +122,16 @@ class Teknisi extends CI_Controller{
       $row[] = $key->TINDAK_LANJUT;
       $row[] = $key->SN_ONT;
       if ($this->session->userdata('role')!='TEKNISI') {
-        if ($key->STATUS_RESUME=='PI Progress') {
-          $row[] = '<a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Cancel" onclick="calcel_assign_teknisi('."'".$key->NO_SC."'".')"><i class="glyphicon glyphicon-pencil"></i>Cancel</a>';
+        if ($key->STATUS_RESUME=='PI Ready') {
+          $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Assign" onclick="assign_teknisi('."'".$key->NO_SC."'".')">Assign Teknisi</a>
+                  <a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_pi('."'".$key->NO_SC."'".')">Edit PI</a>';
+        }
+        else if ($key->STATUS_RESUME=='PI Progress') {
+          $row[] = '<a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Cancel" onclick="calcel_assign_teknisi('."'".$key->NO_SC."'".')">Cancel</a>
+          <a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_pi('."'".$key->NO_SC."'".')">Edit PI</a>';
         }
         else {
-          $row[] = '';
+          $row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_pi('."'".$key->NO_SC."'".')">Edit PI</a>';
         }
       }
 
@@ -196,6 +203,7 @@ class Teknisi extends CI_Controller{
       array('STO' =>'TOP', 'READY' =>0, 'PROGRESS'=>0, 'ACCOM'=>0, 'KENDALA'=>0),
       array('STO' =>'UBN', 'READY' =>0, 'PROGRESS'=>0, 'ACCOM'=>0, 'KENDALA'=>0),
     );
+    $status=array('READY','PROGRESS','ACCOM','KENDALA');
     foreach ($list as $key) {
       if ($key->STO=='SMY') {
         if ($key->STATUS_RESUME=='PI Ready') $temp[0]['READY']++;
@@ -270,14 +278,13 @@ class Teknisi extends CI_Controller{
       $row = array();
       $row[] = $no;
       $row[] = $temp[$i]['STO'];
-      $row[] = '<a onclick="show_data_table_pi("READY",'."'".$temp[$i]["STO"]."'".')">'.$temp[$i]['READY'].'</a>';
-      $row[] = '<a onclick="show_data_table_pi("PROGRESS",'."'".$temp[$i]["STO"]."'".')">'.$temp[$i]['PROGRESS'].'</a>';
-      $row[] = '<a onclick="show_data_table_pi("ACCOM",'."'".$temp[$i]["STO"]."'".')">'.$temp[$i]['ACCOM'].'</a>';
-      $row[] = '<a onclick="show_data_table_pi("KENDALA",'."'".$temp[$i]["STO"]."'".')">'.$temp[$i]['KENDALA'].'</a>';
+      $row[] = '<a onclick="show_data_table_pi('."'".$status[0]."'".','."'".$temp[$i]['STO']."'".');">'.$temp[$i]['READY'].'</a>';
+      $row[] = '<a onclick="show_data_table_pi('."'".$status[1]."'".','."'".$temp[$i]['STO']."'".');">'.$temp[$i]['PROGRESS'].'</a>';
+      $row[] = '<a onclick="show_data_table_pi('."'".$status[2]."'".','."'".$temp[$i]['STO']."'".');">'.$temp[$i]['ACCOM'].'</a>';
+      $row[] = '<a onclick="show_data_table_pi('."'".$status[3]."'".','."'".$temp[$i]['STO']."'".');">'.$temp[$i]['KENDALA'].'</a>';
 
       $data[] = $row;
     }
-
 
     $output = array(
                     "draw" => $_POST['draw'],
@@ -389,5 +396,11 @@ class Teknisi extends CI_Controller{
   }
   public function ajax_cancel_assign_teknisi(){
     echo json_encode($this->M_teknisi->cancel_assign_teknisi());
+  }
+  public function ajax_edit_pi(){
+    echo json_encode($this->M_teknisi->edit_pi());
+  }
+  public function ajax_submit_edit_pi(){
+    echo json_encode($this->M_teknisi->submit_edit_pi());
   }
 }

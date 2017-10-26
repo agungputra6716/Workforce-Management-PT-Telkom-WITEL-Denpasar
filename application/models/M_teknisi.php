@@ -364,7 +364,7 @@ class M_teknisi extends CI_Model{
     $this->db->update('sc',$data);
     $data=array(
       'STATUS'=> 'BUSY',
-      'NO_SC'=> $this->input->post('no_sc')
+      'NO_SC'=> $this->input->post('NO_SC_SC')
     );
     $this->db->where('USERNAME', $this->input->post('select_teknisi'));
     $this->db->where('TGL_KERJA', date('d/m/Y'));
@@ -379,28 +379,38 @@ class M_teknisi extends CI_Model{
     );
     $this->db->where('NO_SC', $this->input->post('no_sc'));
     $this->db->update('sc',$data);
-    $data=array(
+
+    $temp=array(
       'STATUS'=>'IDLE',
       'NO_SC'=>''
     );
     $this->db->where('NO_SC', $this->input->post('no_sc'));
-    $this->db->update('jadwal',$data);
+    $this->db->update('jadwal',$temp);
     return true;
   }
   function upload_jadwal_csv() {
-      $fp = fopen($_FILES['file_jadwal']['tmp_name'],'r');
-      if($fp){
-        while($csv_line = fgetcsv($fp,20000,",")){
-          for ($i = 0, $j = count($csv_line); $i < $j; $i++)
-          {
-              $insert_csv = array();
-              $insert_csv['STO'] = $csv_line[0];
-              $insert_csv['CLUSTER'] = $csv_line[1];
-              $insert_csv['USERNAME'] = $csv_line[2];
-              $insert_csv['NAME'] = $csv_line[3];
-              $insert_csv['TGL_KERJA'] = $csv_line[4];
-              $insert_csv['STATUS'] = $csv_line[5];
-          }
+    $num=0;
+    $fp = fopen($_FILES['file_jadwal']['tmp_name'],'r');
+    if($fp){
+      while($csv_line = fgetcsv($fp,20000,",")){
+        for ($i = 0, $j = count($csv_line); $i < $j; $i++)
+        {
+            $insert_csv = array();
+            $insert_csv['STO'] = $csv_line[0];
+            $insert_csv['CLUSTER'] = $csv_line[1];
+            $insert_csv['USERNAME'] = $csv_line[2];
+            $insert_csv['NAME'] = $csv_line[3];
+            $insert_csv['TGL_KERJA'] = $csv_line[4];
+            $insert_csv['STATUS'] = 'IDLE';
+        }
+        $this->db->where('TGL_KERJA', $insert_csv['TGL_KERJA']);
+        $this->db->where('STO', $insert_csv['STO']);
+        $this->db->where('CLUSTER', $insert_csv['CLUSTER']);
+        $this->db->where('USERNAME', $insert_csv['USERNAME']);
+        $this->db->where('NAME', $insert_csv['NAME']);
+        $this->db->where('STATUS', $insert_csv['STATUS']);
+        $x = $this->db->get('jadwal');
+        if($x->num_rows() == 0){
           $data = array(
             'STO' => $insert_csv['STO'],
             'CLUSTER' => $insert_csv['CLUSTER'],
@@ -412,27 +422,17 @@ class M_teknisi extends CI_Model{
           $data['crane_features']=$this->db->insert('jadwal', $data);
           if($data['crane_features'])
           {
-            $data['success']="success";
-          }
-          else
-          {
-            $data['success']="error";
+            $num++;
           }
         }
-        fclose($fp) or die("can't close file");
-        if($data['success'] == "success")
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
       }
-      else
-      {
-          return false;
-      }
+      fclose($fp) or die("can't close file");
+      return $num;
+    }
+    else
+    {
+        return false;
+    }
   }
   function update_pi_csv() {
     $num=0;
@@ -648,5 +648,23 @@ class M_teknisi extends CI_Model{
     {
         return false;
     }
+  }
+  function edit_pi(){
+    $this->db->where('NO_SC',$this->input->post('no_sc'));
+    $query = $this->db->get('sc');
+    return $query->result();
+  }
+  function submit_edit_pi(){
+    $this->db->where('NO_SC',$this->input->post('NO_SC_EDIT'));
+    $data=array(
+      'STO'=> $this->input->post('STO_EDIT'),
+      'TYPE_TRANSAKSI' => $this->input->post('TYPE_TRANSAKSI_EDIT'),
+      'ALPRO' => $this->input->post('ALPRO_EDIT'),
+      'POTS' => $this->input->post('POTS_EDIT'),
+      'SPEEDY' => $this->input->post('SPEEDY_EDIT'),
+      'NAMA_CUST' => $this->input->post('NAMA_CUST_EDIT'),
+      'ALAMAT' => $this->input->post('ALAMAT_EDIT'),
+    );
+    return $this->db->update('sc',$data);
   }
 }

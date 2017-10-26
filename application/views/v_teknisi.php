@@ -220,6 +220,8 @@
     <li><a href="#" id='tambah_pi' class="waves-effect"><i class="fa fa-plus" id="token_tambah_pi"></i>Tambah data PI</a></li>
     <li><a href="#" id='summary' class="waves-effect"><i class="fa fa-book" id="token_summary"></i>Summary</a></li>
     <li><a href="#" id='inbox' class="waves-effect"><i class="fa fa-envelope-o" id="token_inbox"></i>Job Inbox</a></li>
+    <li><a href="http://digital361.xyz/mapv2" target="_blank" id='map' class="waves-effect"><i class="fa fa-map" id="token_map"></i>Alpro Map</a></li>
+
   </ul>
 </li>
 <!--/. Side navigation links -->
@@ -366,7 +368,7 @@
     </div>
 </div>
 
-<div class="modal fade" style="height:700px;"id="modal_table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" style="height:700px; position: absolute; z-index: 10040; overflow: auto; overflow-y: auto;"id="modal_table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-notify modal-danger modal-fluid" role="document">
     <!--Content-->
     <div class="modal-content">
@@ -681,6 +683,81 @@
   </div>
 </div>
 
+<div class="modal fade" style="height:700px; position: absolute; z-index: 10040; overflow: auto; overflow-y: auto;"id="modal_edit_pi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead">EDIT PI</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body ">
+        <form id="form_edit_pi" class="" action="" method="post">
+          <div class="md-form">
+            <div class="row">
+              <div class="col-lg-4 col-xsm-4">
+                <input type="text" id="NO_SC_EDIT" name="NO_SC_EDIT" class="form-control" value=" " readonly>
+                <label for="NO_SC_EDIT">NO SC</label>
+              </div>
+              <div class="col-lg-4 col-xsm-4">
+                <input type="text" required id="STO_EDIT" name="STO_EDIT" class="form-control" value=" ">
+                <label for="STO_EDIT">STO</label>
+              </div>
+              <div class="col-lg-4 col-xsm-4">
+                <input type="text" id="TYPE_TRANSAKSI_EDIT" name="TYPE_TRANSAKSI_EDIT" class="form-control" value=" ">
+                <label for="TYPE_TRANSAKSI_EDIT">TYPE TRANSAKSI</label>
+              </div>
+            </div>
+          </div>
+          <div class="md-form">
+            <div class="row">
+              <div class="col-lg-4">
+                <input type="text" id="ALPRO_EDIT" name="ALPRO_EDIT" class="form-control" value=" ">
+                <label for="ALPRO_EDIT">ALPRO</label>
+              </div>
+              <div class="col-lg-4">
+                <input type="text" id="POTS_EDIT" name="POTS_EDIT" class="form-control" value=" ">
+                <label for="POTS_EDIT">POTS</label>
+              </div>
+              <div class="col-lg-4">
+                <input type="text" id="SPEEDY_EDIT" name="SPEEDY_EDIT" class="form-control" value=" ">
+                <label for="SPEEDY_EDIT">SPEEDY</label>
+              </div>
+            </div>
+          </div>
+          <div class="md-form">
+            <div class="row">
+              <div class="col-lg-12">
+                <input type="text" id="NAMA_CUST_EDIT" name="NAMA_CUST_EDIT" class="form-control" value=" ">
+                <label for="NAMA_CUST_EDIT">NAMA CUST</label>
+              </div>
+            </div>
+          </div>
+          <div class="md-form">
+            <div class="row">
+              <div class="col-lg-12">
+                <textarea type="text" id="ALAMAT_EDIT" name="ALAMAT_EDIT" class="form-control md-textarea" value=" "> </textarea>
+                <label for="ALAMAT_EDIT">ALAMAT</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="submit" id="btn_edit_pi"class="btn btn-outline-secondary-modal waves-effect">Update <i class="fa fa-paper-plane-o ml-1"></i></button>
+          </div>
+        </form>
+      </div>
+      <!--Footer-->
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer id='footer' class="page-footer center-on-small-only fluid-bottom danger-color-dark">
 
 
@@ -717,6 +794,9 @@
   var num_ready=0;
   var num_progress=0;
   var num_kendala=0;
+  var is_avail=0;
+  var is_service=0;
+  var is_total=0;
   var current;
   var current_sc;
   var username="<?php echo $this->session->userdata('username') ?>";
@@ -788,7 +868,8 @@
   $('#show_my_cluster').click(function(e) {
     e.preventDefault();
     if(toogle_show_location==0){
-      num_ready=0;num_accom=0;
+      num_ready=0;num_accom=0;num_progress=0;num_kendala=0;
+      is_avail=0;is_service=0;is_total=0;
       $.ajax({
         url: '<?php echo base_url('Teknisi/ajax_get_teknisi') ?>',
         type: 'POST',
@@ -811,8 +892,8 @@
   $('#search_cluster').click(function(e) {
     e.preventDefault();
     $('#slide-out').sideNav('hide');
-    num_accom=0;
-    num_ready=0;
+    num_accom=0;num_progress=0;num_ready=0;num_kendala=0;
+    is_avail=0;is_service=0;is_total=0;
     $.ajax({
       url: '<?php echo base_url('Teknisi/ajax_get_sto') ?>',
       type: 'POST',
@@ -899,7 +980,6 @@
       dataType: 'JSON',
       data: {username: username},
       success:function(data){
-        console.log(data);
         $('#NAME_TEKNISI').val(data[0].NAME);
         $('#NO_SC_SC').val(current_sc.NO_SC);
         $('#HP_TEKNISI').val(data[0].CONTACT);
@@ -1096,6 +1176,22 @@
       }
     });
   });
+  $('#form_edit_pi').submit(function(e){
+    e.preventDefault();
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_submit_edit_pi') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: $('#form_edit_pi').serialize(),
+      success:function(){
+        $('#modal_edit_pi').modal('hide');
+        toastr.success('Data PI berhasil diedit!');
+      },
+      error:function(){
+        toastr.error('Data PI gagal diedit! Periksa koneksi internet anda!');
+      }
+    });
+  });
 
   function myMap() {
     var mapProp= {
@@ -1151,7 +1247,13 @@
         num_accom=0;
         num_progress=0;
         num_kendala=0;
+        is_avail=0;
+        is_service=0;
+        is_total=0;
         for (var i = 0; i < data['odp'].length; i++) {
+          is_avail+=parseInt(data['odp'][i].IS_AVAIL);
+          is_service+=parseInt(data['odp'][i].IS_SERVICE);
+          is_total+=parseInt(data['odp'][i].IS_TOTAL);
           var lat = data['odp'][i].LATITUDE;
           var lng = data['odp'][i].LONGITUDE;
           var location = new google.maps.LatLng(lat,lng);
@@ -1195,6 +1297,9 @@
         num_progress=0;
         num_accom=0;
         num_kendala=0;
+        is_avail=0;
+        is_service=0;
+        is_total=0;
         for (var i = 0; i < data.length; i++) {
           if (data[i].STATUS_RESUME=='PI Ready') num_ready++;
           else if (data[i].STATUS_RESUME=='PI Progress') num_progress++;
@@ -1271,6 +1376,7 @@
         '</form>';
     }
     else if (type=='circle') {
+      console.log(data);
       iw_content='<form  id="frm_content">'+
           '<div class="container">'+
             '<div class="row">'+
@@ -1301,6 +1407,20 @@
               '<div class="col col-lg-6">'+
                 '<span class="keterangan">Jumlah PI Kendala</span>'+
                 '<input type="text" onclick="show_data_table_sc(\'KENDALA\')" id="num_ready" name="num_ready" value="'+num_kendala+'" class="form-control" readonly>'+
+              '</div>'+
+            '</div>'+
+            '<div class="row">'+
+              '<div class="col col-lg-4">'+
+                '<span class="keterangan">IS AVAIL</span>'+
+                '<input type="text" id="num_accom" name="is_avail" value="'+data.is_avail+'" class="form-control" readonly>'+
+              '</div>'+
+              '<div class="col col-lg-4">'+
+                '<span class="keterangan">IS SERVICE</span>'+
+                '<input type="text" id="num_ready" name="is_service" value="'+data.is_service+'" class="form-control" readonly>'+
+              '</div>'+
+              '<div class="col col-lg-4">'+
+                '<span class="keterangan">IS TOTAL</span>'+
+                '<input type="text" id="num_ready" name="is_total" value="'+data.is_total+'" class="form-control" readonly>'+
               '</div>'+
             '</div>'+
             '<div class="row">'+
@@ -1340,6 +1460,9 @@
       }
       var latlat=parseFloat(data.LATITUDE);
       var lnglng=parseFloat(data.LONGITUDE);
+      data.is_avail=is_avail;
+      data.is_service=is_service;
+      data.is_total=is_total;
       var location = new google.maps.LatLng(latlat,lnglng);
       var cluster = new google.maps.Circle({
           strokeColor: warna,
@@ -1419,12 +1542,6 @@
     //  $('#sc_table_filter').remove();
   }
   function show_data_table_pi(type,sto){
-    if ((type=='READY')||(type=='ACCOM')||(type=='KENDALA')) {
-      $('#action').hide();
-    }
-    else {
-      $('#action').show();
-    }
     $('#modal_table').modal('show');
     table = null;
     table = $('#sc_table').DataTable({
@@ -1574,7 +1691,8 @@
       setMapOnAll(null);
     }
     toastr.info('Harap tunggu, proses sedang berjalan');
-    num_ready=0;num_accom=0;
+    num_ready=0;num_accom=0;num_progress=0;num_kendala=0;
+    is_avail=0;is_service=0;is_total=0;
     $.ajax({
       url: '<?php echo base_url("Teknisi/ajax_get_nearest"); ?>',
       type: 'POST',
@@ -1679,6 +1797,7 @@
         data: {no_sc: no_sc},
         success:function(){
           $('#modal_table').modal('hide');
+          $('#modal_summary').modal('hide');
           if (toogle_show_location==1) {
             setMapOnAll(null);
           }
@@ -1692,6 +1811,30 @@
         }
       });
     }
+  }
+  function edit_pi(no_sc){
+    $.ajax({
+      url: '<?php echo base_url('Teknisi/ajax_edit_pi') ?>',
+      type: 'POST',
+      dataType: 'JSON',
+      data: {no_sc: no_sc},
+      success:function(data){
+        console.log(data);
+        $('#NO_SC_EDIT').val(data[0].NO_SC);
+        $('#STO_EDIT').val(data[0].STO);
+        $('#TYPE_TRANSAKSI_EDIT').val(data[0].TYPE_TRANSAKSI);
+        $('#ALPRO_EDIT').val(data[0].ALPRO);
+        $('#POTS_EDIT').val(data[0].POTS);
+        $('#SPEEDY_EDIT').val(data[0].SPEEDY);
+        $('#NAMA_CUST_EDIT').val(data[0].NAMA_CUST);
+        $('#ALAMAT_EDIT').val(data[0].ALAMAT);
+        $('#modal_table').modal('hide');
+        $('#modal_edit_pi').modal('show');
+      },
+      error:function(){
+        alert('error edit pi');
+      }
+    });
   }
   </script>
 </body>
