@@ -23,11 +23,14 @@
     <!-- Template styles -->
     <style rel="stylesheet">
         /* TEMPLATE STYLES */
+        header, main, footer {
+          padding-left: 240px;
+        }
 
         html,
         body,
         .view {
-            height: 90.4%;
+            height: 90.6%;
             width: 100%;
         }
         /* Navigation*/
@@ -51,7 +54,7 @@
 </head>
 <body class="fixed-sn pink-skin" >
 
-<ul id="slide-out" class="side-nav fixed sn-bg-4 custom-scrollbar">
+<ul id="slide-out" class="side-nav fixed sn-bg-4 custom-scrollbar" style="padding-left:0px">
 <!-- Logo -->
 <li>
       <!--
@@ -417,7 +420,7 @@
 </div>
 
 <div class="modal fade" style="height:700px;"id="modal_manage_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
+  <div class="modal-dialog modal-notify modal-danger modal-lg" role="document">
     <!--Content-->
     <div class="modal-content">
       <!--Header-->
@@ -430,8 +433,10 @@
       </div>
 
       <!--Body-->
+
       <div class="modal-body sc_table table-responsive">
         <table id="tb_user" style="height:300px;width:100%;"class="table display table-hover table-responsive" cellspacing="0" width="100%">
+          <button type="" class="btn btn-success btn-sm">Add User</button>
           <thead>
               <tr>
                   <th>NO</th>
@@ -440,8 +445,7 @@
                   <th>ROLE </th>
                   <th>STO</th>
                   <th>CLUSTER</th>
-                  <th>CLUSTER HELP</th>
-                  <th>WORK FINISHED</th>
+                  <th>ACTION</th>
               </tr>
           </thead>
           <tbody>
@@ -454,7 +458,7 @@
 </div>
 
 <div class="modal fade" style="height:700px;"id="modal_teknisi_today" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-notify modal-danger modal-lg" role="document">
+  <div class="modal-dialog modal-notify modal-danger modal-md" role="document">
     <!--Content-->
     <div class="modal-content">
       <!--Header-->
@@ -776,7 +780,7 @@
 <script type="text/javascript" src="<?php echo base_url('assets/js/bootstrap.min.js') ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('assets/js/compiled.min.js') ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.dataTables.min.js') ?>"></script>
-<script type="text/javascript" src="<?php echo base_url('assets/js/dataTables.bootstrap.min.js') ?>"></script>
+
 <script type="text/javascript" src="<?php echo base_url('assets/js/ajaxfileupload.js') ?>"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb4ThyMb8dBaJ6-g_NN9GMFk1sxupL-Uw&callback=myMap" async defer ></script>
 
@@ -1788,7 +1792,7 @@
       }
     });
   }
-  function calcel_assign_teknisi(no_sc){
+  function cancel_assign_teknisi(no_sc){
     if(confirm('Yakin ingin cancel?')){
       $.ajax({
         url: '<?php echo base_url('Teknisi/ajax_cancel_assign_teknisi') ?>',

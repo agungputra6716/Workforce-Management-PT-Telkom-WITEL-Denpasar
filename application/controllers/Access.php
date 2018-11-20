@@ -80,7 +80,7 @@ class Access extends CI_Controller {
 					$row[] = $key->STO;
 					$row[] = $key->CLUSTER;
 					$row[] = $key->USERNAME;
-					$row[] = $key->NAME;					
+					$row[] = $key->NAME;
 					$data[] = $row;
 				}
 			}
@@ -94,8 +94,8 @@ class Access extends CI_Controller {
 					$row[] = $key->ROLE;
 					$row[] = $key->STO;
 					$row[] = $key->CLUSTER;
-					$row[] = $key->CLUSTER_HELP;
-					$row[] = $key->WORK_FINISHED;
+					$row[] = $row[] = '<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Edit" onclick="edit_user('."'".$key->USERNAME."'".')">Edit</a>
+                  <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Delete" onclick="delete_user('."'".$key->USERNAME."'".')">Delete</a>';;
 
 					$data[] = $row;
 				}
